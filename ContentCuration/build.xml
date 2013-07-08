@@ -1,0 +1,98 @@
+<?xml version="1.0" ?>
+<!-- Configuration of the Ant build system to generate a Jar file --> 
+<!--<project name="FreenetRef" default="CreateJar">
+  <target name="CreateJar" description="Create Jar file">
+        <jar jarfile="HelloWorld.jar" basedir="." includes="*.class" />
+  </target>
+</project>
+-->
+
+
+<project name="CCur" basedir="." default="main">
+	
+	<property file="override.properties"/>
+	  <presetdef name="javac"> 
+	    <javac includeantruntime="false" />
+	  </presetdef>
+	
+	
+	<property name="freenet-cvs-snapshot.location" location="/Users/sanve/git/fred-official/dist/freenet.jar"/>
+	<property name="freenet-ext.location" location="/Users/sanve/git/fred-official/lib/freenet/freenet-ext.jar"/>
+	<property name="library.location" location="/Users/sanve/git/plugin-Library-staging/dist/Library.jar"/>
+	<property name="source-version" value="1.6"/>
+	<property name="target-version" value="1.6"/>
+	
+    <property name="src.dir"     value="src"/>
+
+    <property name="build.dir"   value="build"/>
+	<!--property name="build" location="build/"/-->
+	<property name="dist.dir" value="dist/"/>
+    <!--property name="jar.dir"     value="${dist}/jar"/-->
+	<property name="classes.dir" value="${build.dir}/classes"/>
+   <property name="packagebase" value="plugins.ccuration" />
+
+	<path id="lib.path">
+		<pathelement location="${freenet-ext.location}"/>
+		<pathelement location="${freenet-cvs-snapshot.location}"/>
+		<pathelement location="${library.location}"/>
+	</path>
+	
+
+	<echo message="Using ${freenet-cvs-snapshot.location} as freenet-cvs-snapshot.jar"/>
+	<echo message="Using ${freenet-ext.location} as freenet-ext.jar"/>
+
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+    	<delete dir="${dist.dir}"/>
+    </target>
+
+    <target name="compile">
+        <mkdir dir="${classes.dir}"/>
+        <javac srcdir="${src.dir}" destdir="${classes.dir}" debug="on" optimize="on">
+		<sourcepath>
+			<pathelement path="${build}"/>
+		</sourcepath>
+		<classpath>
+			<path refid="lib.path"/>
+		</classpath>
+        <include name="**/**/*.class"/>
+		<include name="**/*.java"/>
+		<exclude name="**/package-info.java"/>
+		<exclude name="${version.src}"/>   
+    	</javac>
+		<javac srcdir="src/" destdir="${build.dir}" debug="on" optimize="on" source="${source-version}" target="${target-version}" encoding="UTF-8">
+			<classpath>
+				<path refid="lib.path"/>
+			</classpath>
+			<include name="**/*.java"/>
+			<exclude name="${version.src}"/>
+		</javac>
+		<copy todir="${build.dir}">
+			<fileset dir="src/">
+				<include name="**/*.l10n" />
+			</fileset>
+		</copy>
+    </target>
+  	
+    <target name="dist" depends="compile">
+        <mkdir dir="${dist.dir}"/>
+        <jar jarfile="${dist.dir}/${ant.project.name}.jar" basedir="${build.dir}" duplicate="fail">
+			<manifest>
+				<attribute name="Main-Class" value="${packagebase}.ContentCuration"/>
+				<attribute name="Plugin-Main-Class" value="${packagebase}.ContentCuration"/>
+				<attribute name="Required-Node-Version" value="${minNodeVersion}"/>
+			</manifest>
+        	 	
+			<exclude name="${version.src}"/>
+        </jar>
+    </target>
+
+    <target name="run" depends="dist">
+        <java jar="${jar.dir}/${ant.project.name}.jar" fork="true"/>
+    </target>
+
+    <target name="clean-build" depends="clean,dist"/>
+
+    <target name="main" depends="clean,run"/>
+
+</project>

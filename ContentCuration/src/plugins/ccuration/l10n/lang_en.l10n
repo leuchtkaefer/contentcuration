@@ -1,0 +1,28 @@
+
+
+GeneralCCurData=General
+#TitleFieldDesc=Title:
+ContentCuration=Content Curation
+
+
+#Static content in web pages
+WebInterface.HomePage.SummaryBox.Header=Content Curation
+WebInterface.HomePage.SummaryBox.FirstRecord=Salute, World!
+
+UploadSomething.SummaryBox.Header= Upload Content
+UploadSomething.SummaryBox.FirstRecord= test
+
+
+#Plugin menu
+WebInterface.HelloPluginMenuItem.Home=Home
+WebInterface.HelloPluginMenuItem.Home.Tooltip=Home page. It gives you a summary
+WebInterface.HelloPluginMenuItem.UploadSomething=Upload Something
+WebInterface.HelloPluginMenuItem.UploadSomething.Tooltip=Upload content using one of your WoT identities
+
+
+
+
+
+WebInterface.HelloPlugin=ContentCuration
+WebInterface.HelloPlugin.Tooltip=CCur Plugin, your place to curate Freenet Content and share files.
+
