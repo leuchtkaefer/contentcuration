@@ -19,6 +19,7 @@ package plugins.ccuration.fcp.wot;
 import plugins.ccuration.fcp.ReceptorCore;
 import plugins.ccuration.fcp.SyncPluginTalker;
 import freenet.pluginmanager.PluginNotFoundException;
+import freenet.support.Logger;
 import freenet.support.SimpleFieldSet;
 import freenet.support.api.Bucket;
 
@@ -40,7 +41,11 @@ public class WoTContexts {
 		SyncPluginTalker spt = new SyncPluginTalker(new ReceptorCore() {
 
 			public void onReply(String pluginname, String indentifier, SimpleFieldSet params, Bucket data) {
-				assert(params.get("Message").equals("ContextAdded"));
+				//assert(params.get("Message").equals("ContextAdded"));
+				if (params.get("Message").equals("ContextAdded"))
+					Logger.debug(params.get("Message"), "Adding context succesfully");
+				else
+					Logger.debug(params.get("Message"), "No error while adding context");
 			}
 		}, sfs, null);
 

@@ -66,14 +66,14 @@ public abstract class WebPageImpl implements WebPage {
 	 */
 	public WebPageImpl(WebInterfaceToadlet toadlet, HTTPRequest myRequest, ToadletContext ctx, BaseL10n _baseL10n) {
 		WebInterface myWebInterface = toadlet.webInterface;
-		cCur = myWebInterface.getHello();
+		cCur = myWebInterface.getCCur();
 		uri = toadlet.getURI();
 		baseL10n = _baseL10n;
 		wotIdentities = toadlet.getWoTIdentities();
 		
 		pr = cCur.getPluginRespirator();
 		this.pm = myWebInterface.getPageMaker();
-		PageNode page = pm.getPageNode("Hello World", ctx);
+		PageNode page = pm.getPageNode("Content Curation", ctx);
 		this.pageNode = page.outer;
 		this.contentNode = page.content;
 		this.request = myRequest;

@@ -31,14 +31,15 @@ public class HomePage extends WebPageImpl {
 	}
 
 	/**
-	 * Creates a short summary of what the plugin knows of the HelloWorld.
+	 * Creates a short summary of the plugin.
 	 */
 	private void makeSummary() {
-		HTMLNode box = addContentBox(l10n().getString("WebInterface.HomePage.SummaryBox.Header"));
+		HTMLNode box = addContentBox(l10n().getString("HomePage.SummaryBox.Header"));
 		
 		synchronized(cCur) {
 		HTMLNode list = new HTMLNode("ul");
-		list.addChild(new HTMLNode("li", l10n().getString("WebInterface.HomePage.SummaryBox.FirstRecord")));
+		list.addChild(new HTMLNode("li", l10n().getString("HomePage.SummaryBox.FirstRecord")));
+		list.addChild(new HTMLNode("li", l10n().getString("HomePage.SummaryBox.SecondRecord")));
 		box.addChild(list);
 		}
 		

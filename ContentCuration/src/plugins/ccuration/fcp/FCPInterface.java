@@ -19,6 +19,7 @@ import freenet.support.api.Bucket;
  * @author xor (xor@freenetproject.org), Julien Cornuwel
  *         (batosai@freenetproject.org)
  */
+@Deprecated
 public final class FCPInterface implements FredPluginFCP {
 
 	private final ContentCuration mCC;

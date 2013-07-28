@@ -21,7 +21,7 @@ import freenet.pluginmanager.PluginRespirator;
 import freenet.support.api.HTTPRequest;
 
 /**
- * The web interface of the HelloWorld plugin.
+ * The web interface of the Curator plugin.
  * 
  * @author xor (xor@freenetproject.org)
  * @author Bombe
@@ -77,7 +77,16 @@ public class WebInterface {
 	}
 	
 	public class UploadSomethingWebInterfaceToadlet extends WebInterfaceToadlet {
-
+	
+		protected UploadSomethingWebInterfaceToadlet(HighLevelSimpleClient client, WebInterface wi, NodeClientCore core, String pageTitle) {
+			super(client, wi, core, pageTitle);
+		}
+		
+		@Override
+		WebPage makeWebPage(HTTPRequest req, ToadletContext context) {
+			return new UploadSomethingPage(this, req, context, l10n());
+		}
+		
 		@Override
 		public void handleMethodGET(URI uri, HTTPRequest req, ToadletContext ctx)
 				throws ToadletContextClosedException, IOException,
@@ -102,15 +111,6 @@ public class WebInterface {
 			super.handleMethodPOST(uri, req, ctx);
 			
 
-		}
-
-		protected UploadSomethingWebInterfaceToadlet(HighLevelSimpleClient client, WebInterface wi, NodeClientCore core, String pageTitle) {
-			super(client, wi, core, pageTitle);
-		}
-
-		@Override
-		WebPage makeWebPage(HTTPRequest req, ToadletContext context) {
-			return new UploadSomethingPage(this, req, context, l10n());
 		}
 
 	}	
@@ -143,7 +143,7 @@ public class WebInterface {
 		return mPageMaker;
 	}
 	
-	public ContentCuration getHello() {
+	public ContentCuration getCCur() {
 		return myCCur;
 	}
 	

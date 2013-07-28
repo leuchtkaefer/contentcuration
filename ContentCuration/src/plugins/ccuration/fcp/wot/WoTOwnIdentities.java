@@ -56,6 +56,20 @@ public class WoTOwnIdentities {
 			return "**Error**";
 		}
 	}
+	
+	/**
+	 * Get the insert URI of a given author ID.
+	 * @param author Author ID.
+	 * @return Insert URI of this identity.
+	 */
+	public static String getInsertURI(String author) {
+		try {
+			return getWoTIdentities("InsertURI").get(author);
+		} catch (PluginNotFoundException ex) {
+			return "**Error**";
+		}
+	}
+	
 
 	/**
 	 * Get a specific field from WoT identities.

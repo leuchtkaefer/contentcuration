@@ -8,22 +8,18 @@ import freenet.l10n.BaseL10n.LANGUAGE;
 import freenet.l10n.PluginL10n;
 import freenet.pluginmanager.FredPlugin;
 import freenet.pluginmanager.FredPluginBaseL10n;
-import freenet.pluginmanager.FredPluginFCP;
 import freenet.pluginmanager.FredPluginL10n;
 import freenet.pluginmanager.FredPluginThreadless;
-import freenet.pluginmanager.PluginReplySender;
 import freenet.pluginmanager.PluginRespirator;
 import freenet.support.Logger;
-import freenet.support.SimpleFieldSet;
-import freenet.support.api.Bucket;
 
 /**
  * A simple plugin based on Freenet.
  * 
  * @author leuchtkaefer
  */
-public class ContentCuration implements FredPlugin, FredPluginFCP, FredPluginThreadless, FredPluginL10n, FredPluginBaseL10n {
-
+//public class ContentCuration implements FredPlugin, FredPluginFCP, FredPluginThreadless, FredPluginL10n, FredPluginBaseL10n {
+public class ContentCuration implements FredPlugin, FredPluginThreadless, FredPluginL10n, FredPluginBaseL10n {
 	private static String PLUGIN_NAME;
 	
 	/* References from the node */
@@ -32,11 +28,17 @@ public class ContentCuration implements FredPlugin, FredPluginFCP, FredPluginThr
 	private static PluginRespirator pr;
 	private static PluginL10n l10n;
 
+	public static final String l10nFilesBasePath = "plugins/ccuration/l10n/";
+	public static final String l10nFilesMask = "lang_${lang}.l10n";
+	public static final String l10nOverrideFilesMask = "ccuration_lang_${lang}.override.l10n";
+	
 	/* User interfaces */
 
 	private WebInterface mWebInterface;
 	//private FCPInterface mFCPInterface;
 
+	private LibraryTalker librarytalker;
+	
 	/*
 	 * Boolean that is used for preventing the construction of log-strings if
 	 * logging is disabled (for saving some cpu cycles)
@@ -44,7 +46,7 @@ public class ContentCuration implements FredPlugin, FredPluginFCP, FredPluginThr
 	private static transient volatile boolean logDEBUG = false;
 
 	/** The relative path of the plugin on Freenet's web interface */
-	public static final String SELF_URI = "/HelloWorld";
+	public static final String SELF_URI = "/ContentCuration";
 
 	static {
 		Logger.registerClass(ContentCuration.class);
@@ -78,20 +80,14 @@ public class ContentCuration implements FredPlugin, FredPluginFCP, FredPluginThr
 		try {
 			Logger.normal(this, "ContentCuration starting up...");
 			ContentCuration.pr = pr;
-//			String mURI = "/Hello2";
 			System.err.println("Heartbeat from ContentCuration: " + (new Date()));
 			ContentCuration.PLUGIN_NAME = ContentCuration.getBaseL10n().getString("ContentCuration");
 			
-//			ToadletContainer container = pr.getToadletContainer();
-//			final PageMaker pageMaker = pr.getPageMaker();
-
-//			pageMaker.addNavigationCategory(mURI + "/",
-	//				"WebInterface.HelloPluginMenuName",
-		//			"WebInterface.HelloPluginMenuName.Tooltip", this, 1);
-
 			mWebInterface = new WebInterface(this, SELF_URI);
-			//mFCPInterface = new FCPInterface(this);
 
+			//Buffer for indexes
+			librarytalker = new LibraryTalker(pr, this); //leuchtkaefer do i have to initialize it here?
+			//librarytalker.start();//TODO do I need database?
 			
 			Logger.normal(this, "ContentCuration starting up completed.");
 		} catch (RuntimeException e) {
@@ -117,19 +113,25 @@ public class ContentCuration implements FredPlugin, FredPluginFCP, FredPluginThr
 		Logger.debug(this, "Set LANGUAGE to: " + newLanguage.isoCode);
 	}
 
+	
+	/**
+	 * This is where our L10n files are stored.
+	 * @return Path of our L10n files.
+	 */
 	@Override
 	public String getL10nFilesBasePath() {
-		return "plugins/ccuration/l10n/";
+		return ContentCuration.l10nFilesBasePath;
 	}
 
+	
 	@Override
 	public String getL10nFilesMask() {
-		return "lang_${lang}.l10n";
+		return ContentCuration.l10nFilesMask;
 	}
 
 	@Override
 	public String getL10nOverrideFilesMask() {
-		return "ccuration_lang_${lang}.override.l10n";
+		return ContentCuration.l10nOverrideFilesMask;
 	}
 
 	@Override
@@ -157,17 +159,23 @@ public class ContentCuration implements FredPlugin, FredPluginFCP, FredPluginThr
 	}
 
 	public static PluginRespirator getPluginRespirator() {
-		return ContentCuration.pr;
+		return ContentCuration.pr; //leuchtkaefer see static reference
 	}
+
+	public LibraryTalker getLibrarytalker() {
+		return librarytalker;
+	}
+
 
 	/**
 	 * Event handler from FredPluginFCP, handled in <code>class FCPInterface</code>.
 	 */
-	@Override
+	/*
+	@Override //TODO remove this method. i don't need FredPluginFCP
 	public void handle(PluginReplySender replysender, SimpleFieldSet params,
 			Bucket data, int accesstype) {	
 		//TODO implement 
 	//	mFCPInterface.handle(replysender, params, data, accesstype);
 	}
-
+*/
 }
