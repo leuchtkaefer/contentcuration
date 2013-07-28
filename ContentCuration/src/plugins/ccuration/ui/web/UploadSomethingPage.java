@@ -133,6 +133,7 @@ public class UploadSomethingPage extends WebPageImpl {
 							+ WoTOwnIdentities.getRequestURI(identity));
 					System.out.println(pubURI.toString());
 					System.out.println(privURI.toString());
+					
 
 					entry = new InputEntry(privURI, pubURI);
 					entry.setTermClassif(word);
