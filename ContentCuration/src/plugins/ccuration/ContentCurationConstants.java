@@ -6,5 +6,6 @@ public interface ContentCurationConstants {
 	public static final String PUSH_BUFFER = "pushBufferCur";
 	public static final String INSERT_URI = "insertURI";
 	public static final String HASH_PUBKEY = "hashPubKey";
+	public static final String REQUEST_URI = "requestURI";
 	public static final String CONTENT_CURATOR = "ContentCurator";
 }

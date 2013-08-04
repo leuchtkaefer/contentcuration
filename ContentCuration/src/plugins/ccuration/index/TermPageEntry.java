@@ -36,10 +36,12 @@ public class TermPageEntry extends TermEntry {
 	** to save memory.
 	*/
 	private Map<Integer, String> posFragments;
-	
+
+	/*
 	private FreenetURI insertURIOwner;
 	private FreenetURI requestURIOwner;
-
+	 */
+	
 	public String title;
 
 	/**
@@ -54,14 +56,16 @@ public class TermPageEntry extends TermEntry {
 	public TermPageEntry(String s, float r, FreenetURI u, Map<Integer, String> p) {
 		this(s, r, u, (String)null, p);
 	}
-	
+
+	/*	
 	public TermPageEntry(InputEntry input) {
 		this(input.getTermClassif(),0,input.getUri(),(String)null,null);
 		this.insertURIOwner = input.privKey;
 		this.requestURIOwner = input.pubKey;
 	}
-
+*/
 	
+	/*
 	public FreenetURI getInsertURIOwner() {
 		return insertURIOwner;
 	}
@@ -69,7 +73,7 @@ public class TermPageEntry extends TermEntry {
 	public FreenetURI getRequestURIOwner() {
 		return requestURIOwner;
 	}
-
+*/
 	//TODO leuchtkaefer remove compatibility with old indexes
 	/**
 	** Extended constructor with additional {@code title} field for old-style

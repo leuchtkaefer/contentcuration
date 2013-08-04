@@ -111,14 +111,13 @@ public class LibraryTalker implements FredPluginTalker, ContentCurationConstants
 	 * 
 	 * @param input
 	 */
-	private void sendBuffer(){ 
-		System.out.println("Leuchtkaefer master of curator, I reached sendBuffer");
+	public void sendInput(InputEntry i){ 
+		System.out.println("Leuchtkaefer master of curator, I reached sendInput");
 		long tStart = System.currentTimeMillis();
 		try {
 			Bucket bucket = pr.getNode().clientCore.tempBucketFactory.makeBucket(3000000);
-			fillBucket(bucket);
-			System.out.println("Leuchtkaefer master of curator, I am going innerSend");
-			innerSend(bucket);
+			fillBucket(bucket, i);
+			innerSend(bucket, i);
 		} catch (IOException e) {
 			Logger.error(this, "Could not make bucket to transfer buffer", e);
 		}
@@ -129,11 +128,13 @@ public class LibraryTalker implements FredPluginTalker, ContentCurationConstants
 			timeStalled += (tEnd - tStart);
 			if(shutdown) return;
 		}
+		
+		//TODO leuchtkaefer - do sth with this SAVE_FILE does not exists
 		// Robustness: Send SAVE_FILE *after* sending new data, because *it is already on disk*, whereas the new data is not.
 		if(SAVE_FILE.exists()) {
 			System.out.println("Restoring data from last time from "+SAVE_FILE);
 			Bucket bucket = new FileBucket(SAVE_FILE, true, false, false, false, true);
-			innerSend(bucket);
+			innerSend(bucket, i);
 			System.out.println("Restored data from last time from "+SAVE_FILE);
 		}
 	}
@@ -144,13 +145,12 @@ public class LibraryTalker implements FredPluginTalker, ContentCurationConstants
 	 *
 	 * @param input Contains the data enter by user from the web ui
 	 */
+	/*
 	public void maybeSend(InputEntry input) { //TODO leuchtkaefer maybesend should be send directly
 	setBufferSize(1024*1024); //TODO leuchtkaefer which size for balance?
 	bufferUsageEstimate = bufferMax+1; //TODO leuchtkaefer force everything
 	System.out.println("Leuchtkaefer master of curator, I reached maybeSend");
-	System.out.println("input term: "+ input.getTermClassif());
-	System.out.println("input URItoAdd: "+ input.getUri());
-	System.out.println("input insertURI : "+ input.privKey.toString());
+
 	boolean push = false;  
 	synchronized(this) {
 		if (bufferMax == 0) return;
@@ -158,35 +158,34 @@ public class LibraryTalker implements FredPluginTalker, ContentCurationConstants
 			if(pushing != null) {
 				throw new IllegalStateException("Still pushing?!");
 			}
-			TermPageEntry tpe = new TermPageEntry(input); //now it includes the input owner
+			TermPageEntry tpe = input.getTpe(); 
 			termPageBuffer.put(tpe, tpe);
 			pushing = termPageBuffer.values();
-			push = true;
+			push = true; //TODO leuchtkaefer remove all push stuff
 			termPageBuffer = new TreeMap<TermPageEntry,TermPageEntry>();
 			bufferUsageEstimate = 0;
 		}
 	}
-	if(push) sendBuffer();
-	}
+	if(push) sendInput();
+	}*/
 	
 	
-	private void innerSend(Bucket bucket) {
+	
+	private void innerSend(Bucket bucket, InputEntry input) {
 		System.out.println("Leuchtkaefer master of curator, I reached innerSend");
 		SimpleFieldSet sfs = new SimpleFieldSet(true);
-		sfs.putSingle(COMMAND, PUSH_BUFFER); 
-	//	sfs.putSingle(INSERT_URI, "SSK@Rmk5BnyXFXRsxY4yt6f8KzvlvRWe9anNeZZJE-wjoI0,Pi2V~QCik4kvW5uBx-dB~A1Uv7eBdLYoT5CBL6aI8Hk,AQECAAE/"); //MULTIPLE IDENTITIES (+) leuchtkaefer the input should come from web ui
+		sfs.putSingle(COMMAND, PUSH_BUFFER);
+		sfs.putSingle(INSERT_URI, input.getPrivKey().toASCIIString());
+		sfs.putSingle(REQUEST_URI, input.getPubKey().toASCIIString());
 		InputStream is = null;
-		String owner = "";
 		try{
 			is = bucket.getInputStream();
 			SimpleFieldSet fs = new SimpleFieldSet(new LineReadingInputStream(is), 1024, 512, true, true, true);
-			owner = fs.get("index.owner.name");
 		} catch (IOException ex) {
 			Logger.error(this,"IO Exception", ex);
 		} finally {
 			Closer.close(is);
 		}
-		sfs.putSingle(HASH_PUBKEY, owner); //MULTIPLE IDENTITIES (+) leuchtkaefer
 		PluginTalker libraryTalker;
 		try {
 			libraryTalker = pr.getPluginTalker(this, PLUGINS_LIBRARY_MAIN, CONTENT_CURATOR);
@@ -197,15 +196,17 @@ public class LibraryTalker implements FredPluginTalker, ContentCurationConstants
 		}
 	}
 
-	private void fillBucket(Bucket bucket) throws IOException {
+	private void fillBucket(Bucket bucket, InputEntry input) throws IOException {
 		System.out.println("Leuchtkaefer master of curator, I reached fillBucket");
+		
 		OutputStream os = bucket.getOutputStream();
 		SimpleFieldSet meta = new SimpleFieldSet(true); // Stored with data to make things easier.
 		String indexTitle = "Content curated by WoT identity";
-		TermPageEntry firstEntry = pushing.iterator().next();
-		FreenetURI insertURI = firstEntry.getInsertURIOwner(); //leuchtkaefer do i need it?
-		String indexOwner = Base64.encode(firstEntry.getRequestURIOwner().getRoutingKey());
-		System.out.println("Leuchtkaefer in fillBucket indexOwner:" + indexOwner);
+	//	TermPageEntry firstEntry = pushing.iterator().next();
+
+//		FreenetURI insertURI = firstEntry.getInsertURIOwner(); //leuchtkaefer do i need it?
+//		String indexOwner = Base64.encode(firstEntry.getRequestURIOwner().getRoutingKey());
+		String indexOwner = Base64.encode(input.getPubKey().getRoutingKey());
 		String indexOwnerEmail = "private";
 		
 		if(indexTitle != null) {
@@ -216,17 +217,19 @@ public class LibraryTalker implements FredPluginTalker, ContentCurationConstants
 		}
 		if(indexOwnerEmail != null) {
 			meta.putSingle("index.owner.email", indexOwnerEmail);
-		}
-		
+		}	
 		meta.writeTo(os);
-		
-		System.out.println("Leuchtkaefer master of curator, pushing size "+ pushing.size());
+	
+		TermEntryWriter.getInstance().writeObject(input.getTpe(), os);
+		/*
 		for (TermPageEntry termPageEntry : pushing) {
 			TermEntryWriter.getInstance().writeObject(termPageEntry, os); 
 			System.out.println(termPageEntry.subj);
 		}
+	
 		System.out.println("Leuchtkaefer master of curator, sali del for");
 		pushing = null;
+		*/
 		os.close();
 		bucket.setReadOnly();
 		System.out.println("Leuchtkaefer master of curator, fillBucket ended");

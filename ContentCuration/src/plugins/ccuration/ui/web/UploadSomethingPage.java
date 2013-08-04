@@ -114,10 +114,10 @@ public class UploadSomethingPage extends WebPageImpl {
 		if (content != null) {
 
 			System.out.println("entro al InputEntry");
-			String word = request.getPartAsStringFailsafe("term", 128);
-			String uri = request.getPartAsStringFailsafe("newContentURI", 128);
+			String category = request.getPartAsStringFailsafe("term", 128);
+			String docURI = request.getPartAsStringFailsafe("newContentURI", 128);
 
-			if (Utils.validString(word) && Utils.validString(uri)) {
+			if (Utils.validString(category) && Utils.validString(docURI)) {
 				try {
 					FreenetURI privURI = new FreenetURI(WoTOwnIdentities
 							.getInsertURI(identity).substring(
@@ -135,9 +135,8 @@ public class UploadSomethingPage extends WebPageImpl {
 					System.out.println(privURI.toString());
 					
 
-					entry = new InputEntry(privURI, pubURI);
-					entry.setTermClassif(word);
-					entry.setUri(new FreenetURI(uri));
+					entry = new InputEntry(privURI, pubURI,category, new FreenetURI(docURI), (String)null, null);
+					
 					System.out.println("salgo del InputEntry");
 				} catch (MalformedURLException e1) {
 					Logger.error(this, "Error while forming the URI", e1);
@@ -147,7 +146,7 @@ public class UploadSomethingPage extends WebPageImpl {
 				}
 				// LibraryTalker will send user's input to Library
 				LibraryTalker ltalker = cCur.getLibrarytalker();
-				ltalker.maybeSend(entry);
+				ltalker.sendInput(entry);
 			}else {
 				HTMLNode listBoxContent2 = addContentBox("Please include some data to publish in your index.");
 			}
