@@ -26,7 +26,7 @@ import freenet.support.api.HTTPRequest;
  * 
  * @author leuchtkaefer
  */
-public class UploadSomethingPage extends WebPageImpl {
+public class CurateThisContent extends WebPageImpl {
 
 	/**
 	 * Creates a webpage.
@@ -37,23 +37,33 @@ public class UploadSomethingPage extends WebPageImpl {
 	 * @param myRequest
 	 *            The request sent by the user.
 	 */
-	public UploadSomethingPage(WebInterfaceToadlet toadlet,
+	public CurateThisContent(WebInterfaceToadlet toadlet,
 			HTTPRequest myRequest, ToadletContext context, BaseL10n _baseL10n) {
 		super(toadlet, myRequest, context, _baseL10n);
 
 	}
 
 	public void make() {
-		makeSummary();
+	//	makeSummary();
 		String indexOwner = null;
 		String content = null;
 		int nbOwnIdentities = 1;
 		String ownerID = request.getPartAsStringFailsafe("OwnerID", 128);
 		String buttonNewContentValue = request.getPartAsStringFailsafe(
 				"buttonNewContent", 128);
-		String identity = request
-				.getPartAsStringFailsafe("chosenIdentity", 128);
-		InputEntry entry;
+		//String identity = request
+		//		.getPartAsStringFailsafe("chosenIdentity", 128);
+		InputEntry entry; //TODO leuchtkaefer
+		
+		String bookmarkletURI = request.getParam("addNewURI");
+		
+		
+		System.out.println("MAKE indexOwner " + indexOwner);
+		System.out.println("MAKE content " + content);
+		System.out.println("MAKE ownerID " + ownerID);
+		System.out.println("MAKE buttonNewContentValue " + buttonNewContentValue);
+		System.out.println("MAKE vero " + bookmarkletURI);
+	
 
 		if (!ownerID.equals("")) {
 			try {
@@ -82,7 +92,7 @@ public class UploadSomethingPage extends WebPageImpl {
 			}
 		}
 
-		// Actions done when UseThisIdentity button is pressed?//TODO check
+		// Actions done when UseThisIdentity button is pressed
 		if (indexOwner != null) {
 			try {
 				makeInputNewContentForm(indexOwner);
@@ -100,7 +110,7 @@ public class UploadSomethingPage extends WebPageImpl {
 				addErrorBox("Error", e);
 			}
 		} else if (nbOwnIdentities > 1) {
-			makeSelectOwnIdentityForm();
+			makeSelectOwnIdentityForm(bookmarkletURI);
 			// makeInputNewContentForm();
 		} else {
 			makeNoOwnIdentityWarning();
@@ -116,7 +126,8 @@ public class UploadSomethingPage extends WebPageImpl {
 			System.out.println("entro al InputEntry");
 			String category = request.getPartAsStringFailsafe("term", 128);
 			String docURI = request.getPartAsStringFailsafe("newContentURI", 128);
-
+			String identity = request.getPartAsStringFailsafe("OwnerID", 128);
+			
 			if (Utils.validString(category) && Utils.validString(docURI)) {
 				try {
 					FreenetURI privURI = new FreenetURI(WoTOwnIdentities
@@ -131,10 +142,12 @@ public class UploadSomethingPage extends WebPageImpl {
 											.indexOf(' ')));
 					System.out.println("recovered Identity "
 							+ WoTOwnIdentities.getRequestURI(identity));
+					pubURI = pubURI.setDocName("index").setSuggestedEdition(0);
+					privURI = privURI.setDocName("index").setSuggestedEdition(0);
+					
 					System.out.println(pubURI.toString());
 					System.out.println(privURI.toString());
 					
-
 					entry = new InputEntry(privURI, pubURI,category, new FreenetURI(docURI), (String)null, null);
 					
 					System.out.println("salgo del InputEntry");
@@ -154,49 +167,77 @@ public class UploadSomethingPage extends WebPageImpl {
 
 	}
 
-	/**
-	 * Creates a short summary of what the plugin does.
-	 */
-	private void makeSummary() {
-		// testing WoT connection
-		final HTMLNode form = ContentCuration.getPluginRespirator()
-				.addFormChild(contentNode, this.uri, "UploadSth");
-		final HTMLNode generalBox = this.pm.getInfobox(null, ContentCuration
-				.getBaseL10n().getString("UploadSomething.GeneralCCurData"),
-				form, "IdentitySelection", true); // title
 
-	}
+	private void makeSelectOwnIdentityForm(String uri) {
 
-	private void makeSelectOwnIdentityForm() {
-
+		try {
+			FreenetURI fURI = new FreenetURI(uri);
+			
+			uri = fURI.sskForUSK().toASCIIString();
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			
+		}
+		
+		
 		HTMLNode listBoxContent = addContentBox(l10n().getString(
 				"UploadSomethingPage.SelectWoTIdentity.Header"));
-		HTMLNode selectForm = pr.addFormChild(listBoxContent, uri,
-				"ViewIdentity"); // TODO do i need
-									// ContentCuration.getPluginRespirator?
-		HTMLNode selectBox = selectForm.addChild("select", "name", "OwnerID");
+		HTMLNode inputForm = pr.addFormChild(listBoxContent, uri,
+				"ViewIdentity"); 
+		HTMLNode selectBox = new HTMLNode("select", "name", "OwnerID");
 
 		synchronized (cCur) {
-			for (final String identityID : this.getWotIdentities().keySet())
+			for (final String identityID : this.getWotIdentities().keySet()){
 				selectBox.addChild("option", "value", identityID, this
 						.getWotIdentities().get(identityID));
+			}
+			selectBox.getChildren().get(0).addAttribute("selected", "selected");
+			
 		}
+		inputForm.addChild("p").addChild("label", "for", "Author",l10n().getString("UploadSomethingPage.AuthorLabel")).addChild("br")
+			.addChild(selectBox);	
+		inputForm.addChild("br");
+		
+		inputForm.addChild("p").addChild("label", "for", "Term",l10n().getString("UploadSomethingPage.TermLabel")).addChild("br")
+			.addChild("input", new String[] { "type", "name", "size" },
+				new String[] { "text", "term", "30" });
+		inputForm.addChild("br");
+		
+		
+		if (uri.length()>0) {
+			inputForm.addChild("p").addChild("label", "for", "URI",l10n().getString("UploadSomethingPage.URILabel")).addChild("br")
+			.addChild("input", new String[] { "type", "name", "size","value" },
+					new String[] { "text", "newContentURI", "128",uri });
+		} else {
+			inputForm.addChild("p").addChild("label", "for", "URI",l10n().getString("UploadSomethingPage.URILabel")).addChild("br")
+			.addChild("input", new String[] { "type", "name", "size" },
+				new String[] { "text", "newContentURI", "128" });
+		}
+		
+		inputForm.addChild("p").addChild("label", "for", "Title",l10n().getString("UploadSomethingPage.TitleLabel")).addChild("br")
+			.addChild("input", new String[] { "type", "name", "size" },
+					new String[] { "text", "title", "65" });
+		inputForm.addChild("br");
+	
+		inputForm.addChild("p").addChild("label", "for", "Term",l10n().getString("UploadSomethingPage.TagsLabel")).addChild("br")
+			.addChild("input", new String[] { "type", "name", "size" },
+					new String[] { "text", "tags", "155" });
+		inputForm.addChild("br");
+		
+		inputForm.addChild("br");
+		inputForm
+				.addChild("input", new String[] { "type", "name", "value" },
+						new String[] { "submit", "buttonNewContent",
+								"addingNewContent" });
 
-		selectForm
-				.addChild(
-						"input",
-						new String[] { "type", "name", "value" },
-						new String[] {
-								"submit",
-								"select",
-								l10n().getString(
-										"UploadSomethingPage.SelectWoTIdentity.SelectIdentityButton") });
 
 	}
 
 	private void makeInputNewContentForm(String indexOwner) {
-
+		
 		System.out.println("indexOwner" + indexOwner);
+		System.out.println("uri in form " + uri);
 		HTMLNode inputNode = addContentBox(l10n().getString(
 				"UploadSomethingPage.InputContent.Header"));
 		HTMLNode inputForm = pr.addFormChild(inputNode, uri, "ViewIdentity"); // TODO
@@ -217,6 +258,7 @@ public class UploadSomethingPage extends WebPageImpl {
 						new String[] { "submit", "buttonNewContent",
 								"addingNewContent" });
 
+		
 	}
 
 	private void makeNoOwnIdentityWarning() {

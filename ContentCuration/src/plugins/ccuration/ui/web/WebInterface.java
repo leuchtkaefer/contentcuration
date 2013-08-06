@@ -84,7 +84,7 @@ public class WebInterface {
 		
 		@Override
 		WebPage makeWebPage(HTTPRequest req, ToadletContext context) {
-			return new UploadSomethingPage(this, req, context, l10n());
+			return new CurateThisContent(this, req, context, l10n());
 		}
 		
 		@Override

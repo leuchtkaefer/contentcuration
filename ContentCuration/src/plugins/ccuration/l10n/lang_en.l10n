@@ -24,6 +24,11 @@ UploadSomethingPage.NoOwnIdentityWarning.Text = You should create an identity fi
 UploadSomething.SelectOwnIdentity.Failed = Error while selecting the OwnIdentity
 UploadSomethingPage.Test = Esto es parte de un test
 UploadSomethingPage.InputContent.Header=Insert a new file in the index
+UploadSomethingPage.AuthorLabel=Select the WoT identity who curates this content
+UploadSomethingPage.TermLabel=Curate content under this category
+UploadSomethingPage.URILabel=FreenetURI
+UploadSomethingPage.TitleLabel=Title of the content (Max. 65 char)
+UploadSomethingPage.TagsLabel=Help people to find the content by adding keywords. Separate values (max. 5) by commas
 
 
 #Plugin menu

@@ -176,7 +176,7 @@ public class LibraryTalker implements FredPluginTalker, ContentCurationConstants
 		SimpleFieldSet sfs = new SimpleFieldSet(true);
 		sfs.putSingle(COMMAND, PUSH_BUFFER);
 		sfs.putSingle(INSERT_URI, input.getPrivKey().toASCIIString());
-		sfs.putSingle(REQUEST_URI, input.getPubKey().toASCIIString());
+		sfs.putSingle(HASH_PUBKEY, Base64.encode(input.getPubKey().getRoutingKey()));
 		InputStream is = null;
 		try{
 			is = bucket.getInputStream();
