@@ -9,6 +9,9 @@ import freenet.support.api.HTTPRequest;
 public class InputEntry {
 
 	private final FreenetURI privKey; // insertURI
+	private final FreenetURI pubKey;
+	private final TermPageEntry tpe;
+	
 	public FreenetURI getPrivKey() {
 		return privKey;
 	}
@@ -24,19 +27,6 @@ public class InputEntry {
 	}
 
 
-	private final FreenetURI pubKey;
-	private final TermPageEntry tpe;
-	/*
-	private FreenetURI uri;
-	private String termClassif;
-	
-	public InputEntry(FreenetURI privKeyIdentity, FreenetURI pubKeyIdentity) throws MalformedURLException {
-		privKey = privKeyIdentity;
-		pubKey = pubKeyIdentity;
-		uri = new FreenetURI("CHK@");
-		termClassif = "general";
-	}	
-	*/
 	
 	
 	/**

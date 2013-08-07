@@ -177,7 +177,8 @@ public class LibraryTalker implements FredPluginTalker, ContentCurationConstants
 		sfs.putSingle(COMMAND, PUSH_BUFFER);
 		sfs.putSingle(INSERT_URI, input.getPrivKey().toASCIIString());
 		sfs.putSingle(HASH_PUBKEY, Base64.encode(input.getPubKey().getRoutingKey()));
-		InputStream is = null;
+		/*
+		InputStream is = null; //TODO leuchtkaefer remove all this try
 		try{
 			is = bucket.getInputStream();
 			SimpleFieldSet fs = new SimpleFieldSet(new LineReadingInputStream(is), 1024, 512, true, true, true);
@@ -185,7 +186,7 @@ public class LibraryTalker implements FredPluginTalker, ContentCurationConstants
 			Logger.error(this,"IO Exception", ex);
 		} finally {
 			Closer.close(is);
-		}
+		}*/
 		PluginTalker libraryTalker;
 		try {
 			libraryTalker = pr.getPluginTalker(this, PLUGINS_LIBRARY_MAIN, CONTENT_CURATOR);

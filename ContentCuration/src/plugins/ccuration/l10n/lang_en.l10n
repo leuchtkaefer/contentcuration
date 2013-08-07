@@ -1,7 +1,4 @@
 
-UploadSomething.AuthorFieldDesc = Own Identities
-UploadSomething.GeneralCCurData=General
-#TitleFieldDesc=Title:
 ContentCuration=Content Curation
 
 MissingWoT = Missing Web of Trust plugin
@@ -10,37 +7,30 @@ MissingWoTIdentity = Missing WoT identity
 MissingWoTIdentityLong = Content Curation requires at least one WoT identity
 
 
-HomePage.SummaryBox.Header=About
-HomePage.SummaryBox.FirstRecord= Content curation is the process of collecting and classifying the most interesting things about a subject to share it for the common benefit at a single location.
-HomePage.SummaryBox.SecondRecord= WoT Identities are used to sign the curated material; thus each identity owns and maintains a unique index.
+AboutPage.SummaryBox.HeaderSection1 = About
+AboutPage.SummaryBox.Section1FirstRecord = Content curation is the process of collecting and classifying the most interesting things about a subject to share it for the common benefit at a single location.
+AboutPage.SummaryBox.Section1SecondRecord = WoT Identities are used to sign the curated material; thus each identity owns and maintains a unique index.
+AboutPage.SummaryBox.HeaderSection2 = Add a bookmarklet button in the navigation bar of your browser
+AboutPage.SummaryBox.Section2FirstRecord = A bookmarklet is a bookmark that contains javascript code to extend the functionality of your favorite browser. 
+AboutPage.SummaryBox.Section2SecondRecord = You can curate content easily by pressing a bookmarklet button while you visit a page or download Freenet content.
+AboutPage.SummaryBox.Section2ThirdRecord = Just drag and drop the link "FreeCurateIt" to the navigation bar and start curating items in Freenet.
 
-
-UploadSomething.SummaryBox.Header= Upload Content
-UploadSomething.SummaryBox.FirstRecord= test
-UploadSomethingPage.SelectWoTIdentity.Header = Select the WoT identity
-UploadSomethingPage.SelectWoTIdentity.SelectIdentityButton = Use this identity
-UploadSomethingPage.NoOwnIdentityWarning.Header = No own identity found
-UploadSomethingPage.NoOwnIdentityWarning.Text = You should create an identity first using the WoT plugin.
-UploadSomething.SelectOwnIdentity.Failed = Error while selecting the OwnIdentity
-UploadSomethingPage.Test = Esto es parte de un test
-UploadSomethingPage.InputContent.Header=Insert a new file in the index
-UploadSomethingPage.AuthorLabel=Select the WoT identity who curates this content
-UploadSomethingPage.TermLabel=Curate content under this category
-UploadSomethingPage.URILabel=FreenetURI
-UploadSomethingPage.TitleLabel=Title of the content (Max. 65 char)
-UploadSomethingPage.TagsLabel=Help people to find the content by adding keywords. Separate values (max. 5) by commas
+CurateThisContentPage.SelectWoTIdentity.Header = Curate this item in Freenet
+CurateThisContentPage.NoOwnIdentityWarning.Header = No own identity found
+CurateThisContentPage.NoOwnIdentityWarning.Text = You should create an identity first using the WoT plugin.
+CurateThisContent.SelectOwnIdentity.Failed = Error while selecting the OwnIdentity
+CurateThisContentPage.AuthorLabel = Select the WoT identity who curates this content
+CurateThisContentPage.TermLabel = Curate content under this category
+CurateThisContentPage.URILabel = FreenetURI
+CurateThisContentPage.TitleLabel = Title of the content (Max. 65 char)
+CurateThisContentPage.TagsLabel = Help people to find the content by adding keywords. Separate values (max. 5) by commas
 
 
 #Plugin menu
-WebInterface.HelloPluginMenuItem.Home=About
-WebInterface.HelloPluginMenuItem.Home.Tooltip=General info on the plugin
-WebInterface.HelloPluginMenuItem.UploadSomething=Curate content
-WebInterface.HelloPluginMenuItem.UploadSomething.Tooltip=Select a WoT identity and publish new content in its index
+WebInterface.HelloPluginMenuItem.Home = About
+WebInterface.HelloPluginMenuItem.Home.Tooltip = General info on the plugin
+WebInterface.HelloPluginMenuItem.UploadSomething = Curate content
+WebInterface.HelloPluginMenuItem.UploadSomething.Tooltip = Select a WoT identity and publish new content in its index
 
-
-
-
-
-WebInterface.HelloPlugin=ContentCuration
-WebInterface.HelloPlugin.Tooltip=CCur Plugin, your place to curate Freenet Content and share files.
-
+WebInterface.HelloPlugin = ContentCuration
+WebInterface.HelloPlugin.Tooltip = CCur Plugin, your place to curate Freenet Content and share files.

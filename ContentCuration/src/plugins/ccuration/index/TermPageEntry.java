@@ -26,7 +26,6 @@ public class TermPageEntry extends TermEntry {
 	*/
 	final public FreenetURI page;
 
-	//TODO leuchtkaefer remove things that i don't use. Positions are not relevant
 	/** Positions where the term occurs. May be null if we don't have that data. */
 	private SortedIntSet positions;
 	

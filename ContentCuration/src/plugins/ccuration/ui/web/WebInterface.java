@@ -58,7 +58,7 @@ public class WebInterface {
 
 		@Override
 		WebPage makeWebPage(HTTPRequest req, ToadletContext context) {
-			return new HomePage(this, req, context, l10n());
+			return new AboutPage(this, req, context, l10n());
 		}
 
 		@Override
