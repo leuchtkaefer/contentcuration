@@ -45,7 +45,6 @@
 
 	<target name="mkdir">
 		<mkdir dir="${build.dir}"/>
-		<mkdir dir="${build-test}"/>
 		<mkdir dir="${dist.dir}"/>
 		<mkdir dir="${classes.dir}"/>
 		<echo message="Using ${freenet-cvs-snapshot.location} as freenet-cvs-snapshot.jar"/>
