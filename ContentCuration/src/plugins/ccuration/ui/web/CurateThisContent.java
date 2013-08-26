@@ -4,6 +4,8 @@
 package plugins.ccuration.ui.web;
 
 import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -97,22 +99,25 @@ public class CurateThisContent extends WebPageImpl {
 			String identity = request.getPartAsStringFailsafe("OwnerID", 128);
 			String pageTitle = request.getPartAsStringFailsafe("title", 65);
 			
+			Collection<String> tags = new ArrayList<String>();
+			tags.add(request.getPartAsStringFailsafe("tag1", 155));
+			tags.add(request.getPartAsStringFailsafe("tag2", 155));
+			tags.add(request.getPartAsStringFailsafe("tag3", 155));
+			
 			if (Utils.validString(category) && Utils.validString(docURI)) {
 				try {
-					FreenetURI privURI = new FreenetURI(WoTOwnIdentities
-							.getInsertURI(identity).substring(
-									0,
-									WoTOwnIdentities.getInsertURI(identity)
-											.indexOf(' ')));
-					FreenetURI pubURI = new FreenetURI(WoTOwnIdentities
-							.getRequestURI(identity).substring(
-									0,
-									WoTOwnIdentities.getRequestURI(identity)
-											.indexOf(' ')));
+					final String insertURI = WoTOwnIdentities
+							.getInsertURI(identity);
+					FreenetURI privURI = new FreenetURI(insertURI);
+					final String requestURI = WoTOwnIdentities
+							.getRequestURI(identity);
+					FreenetURI pubURI = new FreenetURI(requestURI);
 					pubURI = pubURI.setDocName("index").setSuggestedEdition(0);
 					privURI = privURI.setDocName("index").setSuggestedEdition(0);
 					
-					entry = new InputEntry(privURI, pubURI, category, new FreenetURI(docURI), pageTitle, null);
+					//TODO leuchtkaefer check that all needed inputs are not empty pageTitle, category. Tags are optional
+					
+					entry = new InputEntry(privURI, pubURI, category, new FreenetURI(docURI), pageTitle, tags, null);
 					
 				} catch (MalformedURLException e1) {
 					Logger.error(this, "Error while forming the URI", e1);
@@ -121,7 +126,7 @@ public class CurateThisContent extends WebPageImpl {
 					return;
 				}
 				//send user's input to Library
-				LibraryTalker ltalker = cCur.getLibrarytalker();
+				LibraryTalker ltalker = cCur.getLibraryTalker();
 				ltalker.sendInput(entry);
 			}else {
 				HTMLNode listBoxContent2 = addContentBox("Please include some data to publish in your index.");
@@ -175,14 +180,17 @@ public class CurateThisContent extends WebPageImpl {
 		}
 		inputForm.addChild("br");
 	
-		inputForm.addChild("p").addChild("label", "for", "Term",l10n().getString("CurateThisContentPage.TagsLabel")).addChild("br")
-			.addChild("input", new String[] { "type", "name", "size" },
-					new String[] { "text", "tags", "155" });
+		inputForm.addChild("p").addChild("label", "for", "Term",l10n().getString("CurateThisContentPage.TagsLabel"));
+		inputForm.addChild("input", new String[] { "type", "name", "size" },
+					new String[] { "text", "tag1", "155" });
+		inputForm.addChild("input", new String[] { "type", "name", "size" },
+				new String[] { "text", "tag2", "155" });
+		inputForm.addChild("input", new String[] { "type", "name", "size" },
+				new String[] { "text", "tag3", "155" });
 		inputForm.addChild("br");
 		
-		inputForm.addChild("br");
-		inputForm
-				.addChild("input", new String[] { "type", "name", "value" },
+		inputForm.addChild("p").
+				addChild("input", new String[] { "type", "name", "value" },
 						new String[] { "submit", "buttonNewContent",
 								"addingNewContent" });
 	}

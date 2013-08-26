@@ -203,7 +203,7 @@ public class TermPageEntry extends TermEntry {
 	public void putPosition(int position) {
 		if(positions == null) positions = new SortedIntSet();
 		positions.add(position);
-		if(posFragments != null)
+		if(posFragments != null)  //we don't use text fragments
 			posFragments.put(position, null);
 	}
 

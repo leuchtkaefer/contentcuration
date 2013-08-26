@@ -100,7 +100,8 @@ public class WoTOwnIdentities {
 						assert (identifiers.size() == nicknames.size());
 
 						for (int i = 0; i < identifiers.size(); ++i) {
-							identities.put(identifiers.get(i), nicknames.get(i) + " (" + identifiers.get(i) + ")");
+						//	identities.put(identifiers.get(i), nicknames.get(i) + " (" + identifiers.get(i) + ")");
+							identities.put(identifiers.get(i), nicknames.get(i));
 						}
 					} else {
 						Logger.error(this, "Unexpected message : " + params.getString("Message"));

@@ -23,7 +23,7 @@ CurateThisContentPage.AuthorLabel = Select the WoT identity who curates this con
 CurateThisContentPage.TermLabel = Curate content under this category
 CurateThisContentPage.URILabel = FreenetURI
 CurateThisContentPage.TitleLabel = Title of the content (Max. 65 char)
-CurateThisContentPage.TagsLabel = Help people to find the content by adding keywords. Separate values (max. 5) by commas
+CurateThisContentPage.TagsLabel = Help people to find the content by adding keyphrases (max. 3).
 
 
 #Plugin menu

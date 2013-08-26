@@ -10,6 +10,7 @@ import freenet.pluginmanager.FredPlugin;
 import freenet.pluginmanager.FredPluginBaseL10n;
 import freenet.pluginmanager.FredPluginL10n;
 import freenet.pluginmanager.FredPluginThreadless;
+import freenet.pluginmanager.PluginNotFoundException;
 import freenet.pluginmanager.PluginRespirator;
 import freenet.support.Logger;
 
@@ -77,7 +78,7 @@ public class ContentCuration implements FredPlugin, FredPluginThreadless, FredPl
 	}
 
 	public void runPlugin(PluginRespirator pr) {
-		try {
+	//	try {
 			Logger.normal(this, "ContentCuration starting up...");
 			ContentCuration.pr = pr;
 			System.err.println("Heartbeat from ContentCuration: " + (new Date()));
@@ -85,18 +86,23 @@ public class ContentCuration implements FredPlugin, FredPluginThreadless, FredPl
 			
 			mWebInterface = new WebInterface(this, SELF_URI);
 
-			//Buffer for indexes
-			librarytalker = new LibraryTalker(pr, this); //leuchtkaefer do i have to initialize it here?
-			//librarytalker.start();//TODO do I need database?
+			try {
+				//Buffer for indexes
+				librarytalker = new LibraryTalker(pr, this); 
+				librarytalker.start();
+			} catch (PluginNotFoundException e) {
+				Logger.error(this, "Couldn't connect to Library. Please check if Library plugin is loaded", e);
+				terminate();
+			} 
 			
 			Logger.normal(this, "ContentCuration starting up completed.");
-		} catch (RuntimeException e) {
-			Logger.error(this, "ContentCuration, error during startup", e);
+	//	} catch (RuntimeException e) {
+	//		Logger.error(this, "ContentCuration, error during startup", e);
 			/* We call it so the database is properly closed */
-			terminate();
+	//		terminate();
 
-			throw e;
-		}
+	//		throw e;
+	//	}
 
 	}
 
@@ -162,7 +168,7 @@ public class ContentCuration implements FredPlugin, FredPluginThreadless, FredPl
 		return ContentCuration.pr; //leuchtkaefer see static reference
 	}
 
-	public LibraryTalker getLibrarytalker() {
+	public LibraryTalker getLibraryTalker() {
 		return librarytalker;
 	}
 

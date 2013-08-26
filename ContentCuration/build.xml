@@ -15,56 +15,75 @@
 	    <javac includeantruntime="false" />
 	  </presetdef>
 	
+    <property name="src.dir"    value="src"/>
+    <property name="build.dir"  value="build"/>
+	<property name="dist.dir" value="dist"/>
+    <property name="classes.dir" value="${build.dir}/classes"/>
+
 	
 	<property name="freenet-cvs-snapshot.location" location="../../fred-staging/dist/freenet.jar"/>
 	<property name="freenet-ext.location" location="../../fred-staging/lib/freenet/freenet-ext.jar"/>
-	<property name="library.location" location=".../../plugin-Library-staging/dist/Library.jar"/>
+	<property name="version.src" value="plugins/ccuration/Version.java" />
+	<property name="version.build" value="plugins/ccuration/Version.class" />
+	<available file="${src.dir}/${version.src}" property="version.present" />
+	
 	<property name="source-version" value="1.6"/>
 	<property name="target-version" value="1.6"/>
 	
-    <property name="src.dir"     value="src"/>
 
-    <property name="build.dir"   value="build"/>
-	<property name="dist.dir" value="dist/"/>
-    <property name="classes.dir" value="${build.dir}/classes"/>
    <property name="packagebase" value="plugins.ccuration" />
 
 	<path id="lib.path">
 		<pathelement location="${freenet-ext.location}"/>
 		<pathelement location="${freenet-cvs-snapshot.location}"/>
-		<pathelement location="${library.location}"/>
 	</path>
-	
-
-	<echo message="Using ${freenet-cvs-snapshot.location} as freenet-cvs-snapshot.jar"/>
-	<echo message="Using ${freenet-ext.location} as freenet-ext.jar"/>
 
     <target name="clean">
         <delete dir="${build.dir}"/>
     	<delete dir="${dist.dir}"/>
     </target>
 
-    <target name="compile">
-        <mkdir dir="${classes.dir}"/>
-        <javac srcdir="${src.dir}" destdir="${classes.dir}" debug="on" optimize="on">
-		<sourcepath>
-			<pathelement path="${build}"/>
-		</sourcepath>
-		<classpath>
-			<path refid="lib.path"/>
-		</classpath>
-        <include name="**/**/*.class"/>
-		<include name="**/*.java"/>
-		<exclude name="**/package-info.java"/>
-		<exclude name="${version.src}"/>   
-    	</javac>
-		<javac srcdir="src/" destdir="${build.dir}" debug="on" optimize="on" source="${source-version}" target="${target-version}" encoding="UTF-8">
+	<target name="mkdir">
+		<mkdir dir="${build.dir}"/>
+		<mkdir dir="${build-test}"/>
+		<mkdir dir="${dist.dir}"/>
+		<mkdir dir="${classes.dir}"/>
+		<echo message="Using ${freenet-cvs-snapshot.location} as freenet-cvs-snapshot.jar"/>
+		<echo message="Using ${freenet-ext.location} as freenet-ext.jar"/>
+	</target>
+	
+    <target name="compile" depends="mkdir">
+    	<!-- Create the time stamp -->
+    	<tstamp/>
+    	
+    	<!-- Create the Version file with patched revision number in ${build.dir} -->
+    	<copy file="${src.dir}/${version.src}" tofile="${build.dir}/${version.src}" overwrite="true" />
+    	<delete file="${build.dir}/${version.build}" quiet="true" />
+    	<replace file="${build.dir}/${version.src}">
+    	<replacefilter token="@custom@" value="${git.revision}"/>
+    	</replace>
+    	<echo message="Updated build version to ${git.revision} in ${build.dir}/${version.src}"/>
+
+		<!-- Force compile of Version.java in case compile of ${src.dir} didn't trigger it -->
+		<javac srcdir="${build.dir}" destdir="${build.dir}" debug="on" optimize="on" source="${source-version}" target="${target-version}">
 			<classpath>
-				<path refid="lib.path"/>
+				<pathelement location="${freenet-ext.location}"/>
+				<pathelement location="${freenet-cvs-snapshot.location}"/>
+			</classpath>
+			<include name="${version.src}"/>
+		</javac>
+    	
+		<!-- FIXME: remove the debug and replace with optimize -->
+		<javac srcdir="${src.dir}" destdir="${build.dir}" debug="on" optimize="on" source="${source-version}" target="${target-version}">
+			<classpath>
+				<pathelement location="${freenet-ext.location}"/>
+				<pathelement location="${freenet-cvs-snapshot.location}"/>
 			</classpath>
 			<include name="**/*.java"/>
+			<exclude name="**/package-info.java"/>
 			<exclude name="${version.src}"/>
 		</javac>
+    	    	
 		<copy todir="${build.dir}">
 			<fileset dir="src/">
 				<include name="**/*.l10n" />
