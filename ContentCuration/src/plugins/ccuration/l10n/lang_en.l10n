@@ -27,10 +27,10 @@ CurateThisContentPage.TagsLabel = Help people to find the content by adding keyp
 
 
 #Plugin menu
-WebInterface.HelloPluginMenuItem.Home = About
-WebInterface.HelloPluginMenuItem.Home.Tooltip = General info on the plugin
-WebInterface.HelloPluginMenuItem.UploadSomething = Curate content
-WebInterface.HelloPluginMenuItem.UploadSomething.Tooltip = Select a WoT identity and publish new content in its index
+WebInterface.CuratorMenuItem.Home = About
+WebInterface.CuratorMenuItem.Home.Tooltip = General info on the plugin
+WebInterface.CuratorMenuItem.CurateWebPage = Curate content
+WebInterface.CuratorMenuItem.CurateWebPage.Tooltip = Select a WoT identity and publish new content in its index
 
-WebInterface.HelloPlugin = ContentCuration
-WebInterface.HelloPlugin.Tooltip = CCur Plugin, your place to curate Freenet Content and share files.
+WebInterface.Curator = ContentCuration
+WebInterface.Curator.Tooltip = CCur Plugin, your place to curate Freenet Content and share files.

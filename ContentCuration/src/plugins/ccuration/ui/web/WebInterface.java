@@ -36,7 +36,7 @@ public class WebInterface {
 	
 	// Visible
 	private final WebInterfaceToadlet homeToadlet;
-	private final WebInterfaceToadlet uploadToadlet;
+	private final WebInterfaceToadlet uploadWebToadlet;
 	
 
 	private final String mURI;
@@ -76,9 +76,9 @@ public class WebInterface {
 		}
 	}
 	
-	public class UploadSomethingWebInterfaceToadlet extends WebInterfaceToadlet {
+	public class CurateThisItemInterfaceToadlet extends WebInterfaceToadlet {
 	
-		protected UploadSomethingWebInterfaceToadlet(HighLevelSimpleClient client, WebInterface wi, NodeClientCore core, String pageTitle) {
+		protected CurateThisItemInterfaceToadlet(HighLevelSimpleClient client, WebInterface wi, NodeClientCore core, String pageTitle) {
 			super(client, wi, core, pageTitle);
 		}
 		
@@ -124,15 +124,15 @@ public class WebInterface {
 		ToadletContainer container = mPluginRespirator.getToadletContainer();
 		mPageMaker = mPluginRespirator.getPageMaker();
 		
-		mPageMaker.addNavigationCategory(mURI+"/", "WebInterface.HelloPlugin", "WebInterface.HelloPlugin.Tooltip", myCCur, mPluginRespirator.getNode().pluginManager.isPluginLoaded("plugins.Freetalk.Freetalk") ? 2 : 1);
+		mPageMaker.addNavigationCategory(mURI+"/", "WebInterface.Curator", "WebInterface.Curator.Tooltip", myCCur, mPluginRespirator.getNode().pluginManager.isPluginLoaded("plugins.Freetalk.Freetalk") ? 2 : 1);
 		
 		// Visible pages
 		
-		homeToadlet = new HomeWebInterfaceToadlet(null, this, ContentCuration.getPluginRespirator().getNode().clientCore, "");
-		uploadToadlet = new UploadSomethingWebInterfaceToadlet(null, this, ContentCuration.getPluginRespirator().getNode().clientCore, "UploadSomething");
+		homeToadlet = new HomeWebInterfaceToadlet(null, this, ContentCuration.getPluginRespirator().getNode().clientCore, "About");
+		uploadWebToadlet = new CurateThisItemInterfaceToadlet(null, this, ContentCuration.getPluginRespirator().getNode().clientCore, "CurateWebPage");
 		
-		container.register(homeToadlet, "WebInterface.HelloPlugin", mURI+"/", true, "WebInterface.HelloPluginMenuItem.Home", "WebInterface.HelloPluginMenuItem.Home.Tooltip", false, null);
-		container.register(uploadToadlet, "WebInterface.HelloPlugin", mURI+"/UploadSomething", true, "WebInterface.HelloPluginMenuItem.UploadSomething", "WebInterface.HelloPluginMenuItem.UploadSomething.Tooltip", false, null);
+		container.register(homeToadlet, "WebInterface.Curator", mURI+"/", true, "WebInterface.CuratorMenuItem.Home", "WebInterface.CuratorMenuItem.Home.Tooltip", false, null);
+		container.register(uploadWebToadlet, "WebInterface.Curator", mURI+"/CurateWebPage", true, "WebInterface.CuratorMenuItem.CurateWebPage", "WebInterface.CuratorMenuItem.CurateWebPage.Tooltip", false, null);
 	}
 	
 	public String getURI() {
@@ -151,7 +151,7 @@ public class WebInterface {
 		ToadletContainer container = mPluginRespirator.getToadletContainer();
 		for(Toadlet t : new Toadlet[] { 
 				homeToadlet,
-				uploadToadlet
+				uploadWebToadlet
 		}) container.unregister(t);
 		mPageMaker.removeNavigationCategory("WebInterface.HelloPlugin");
 	}
