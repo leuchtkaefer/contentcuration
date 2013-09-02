@@ -19,7 +19,7 @@ import freenet.support.SortedIntSet;
 ** 
 ** @author infinity0
 */
-public class TermPageEntry extends TermEntry {
+public class TermPageEntry extends TermEntry{
 
 	/**
 	** URI of the target
@@ -35,11 +35,6 @@ public class TermPageEntry extends TermEntry {
 	** to save memory.
 	*/
 	private Map<Integer, String> posFragments;
-
-	/*
-	private FreenetURI insertURIOwner;
-	private FreenetURI requestURIOwner;
-	 */
 	
 	public String title;
 
@@ -56,23 +51,6 @@ public class TermPageEntry extends TermEntry {
 		this(s, r, u, (String)null, p);
 	}
 
-	/*	
-	public TermPageEntry(InputEntry input) {
-		this(input.getTermClassif(),0,input.getUri(),(String)null,null);
-		this.insertURIOwner = input.privKey;
-		this.requestURIOwner = input.pubKey;
-	}
-*/
-	
-	/*
-	public FreenetURI getInsertURIOwner() {
-		return insertURIOwner;
-	}
-
-	public FreenetURI getRequestURIOwner() {
-		return requestURIOwner;
-	}
-*/
 	//TODO leuchtkaefer remove compatibility with old indexes
 	/**
 	** Extended constructor with additional {@code title} field for old-style

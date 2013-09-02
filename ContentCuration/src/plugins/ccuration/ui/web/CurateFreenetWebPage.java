@@ -14,6 +14,7 @@ import plugins.ccuration.LibraryTalker;
 import plugins.ccuration.fcp.wot.WoTContexts;
 import plugins.ccuration.fcp.wot.WoTOwnIdentities;
 import plugins.ccuration.index.InputEntry;
+import plugins.ccuration.index.TermEntry;
 import plugins.ccuration.utils.Utils;
 import freenet.clients.http.ToadletContext;
 import freenet.keys.FreenetURI;
@@ -28,7 +29,7 @@ import freenet.support.api.HTTPRequest;
  * 
  * @author leuchtkaefer
  */
-public class CurateThisContent extends WebPageImpl {
+public class CurateFreenetWebPage extends WebPageImpl {
 
 	/**
 	 * Creates a webpage.
@@ -39,24 +40,19 @@ public class CurateThisContent extends WebPageImpl {
 	 * @param myRequest
 	 *            The request sent by the user.
 	 */
-	public CurateThisContent(WebInterfaceToadlet toadlet,
+	public CurateFreenetWebPage(WebInterfaceToadlet toadlet,
 			HTTPRequest myRequest, ToadletContext context, BaseL10n _baseL10n) {
 		super(toadlet, myRequest, context, _baseL10n);
 
 	}
 
 	public void make() {
-//		String indexOwner = null;
 		String content = null;
 		int nbOwnIdentities = 0;
-//		String ownerID = request.getPartAsStringFailsafe("OwnerID", 128);
 		String buttonNewContentValue = request.getPartAsStringFailsafe(
 				"buttonNewContent", 128);
-		//String identity = request
-		//		.getPartAsStringFailsafe("chosenIdentity", 128);
-		InputEntry entry; //TODO leuchtkaefer
-		
-		
+		InputEntry entry; 
+				
 		//Inputs coming from bookmarklet button
 		String bookmarkletURI = request.getParam("addNewURI");
 		String docTitle = request.getParam("addDocTitle");
@@ -67,10 +63,6 @@ public class CurateThisContent extends WebPageImpl {
 				allOwnIdentities = WoTOwnIdentities.getWoTIdentities()
 						.keySet();
 				nbOwnIdentities = allOwnIdentities.size();
-/*				if (nbOwnIdentities == 1) {
-					Iterator<String> iterator = allOwnIdentities.iterator();
-					indexOwner = iterator.next();
-				}*/
 			} catch (PluginNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -78,13 +70,14 @@ public class CurateThisContent extends WebPageImpl {
 		}
 		
 		if (nbOwnIdentities > 0) {
-		//if (this.wotIdentities.size() > 0) {
 			try {
 			curateIt(bookmarkletURI,docTitle);
 			} catch (MalformedURLException e) {
 				Logger.error(this, "Error", e);
 				addErrorBox("Error", e);
 			}
+		} else {
+			makeNoOwnIdentityWarning();
 		}	
 
 		
@@ -115,9 +108,10 @@ public class CurateThisContent extends WebPageImpl {
 					pubURI = pubURI.setDocName("index").setSuggestedEdition(0);
 					privURI = privURI.setDocName("index").setSuggestedEdition(0);
 					
-					//TODO leuchtkaefer check that all needed inputs are not empty pageTitle, category. Tags are optional
-					
-					entry = new InputEntry(privURI, pubURI, category, new FreenetURI(docURI), pageTitle, tags, null);
+					//TODO category is NOT uses. I need another index file!!!!
+					//TODO leuchtkaefer check that all needed inputs are not empty pageTitle, category. Tags are optional					
+					entry = new InputEntry.Builder(privURI, pubURI, new FreenetURI(docURI), TermEntry.EntryType.PAGE,tags).title(pageTitle).build();
+					//entry = new InputEntry(privURI, pubURI, category, new FreenetURI(docURI), pageTitle, tags, null);
 					
 				} catch (MalformedURLException e1) {
 					Logger.error(this, "Error while forming the URI", e1);

@@ -1,5 +1,5 @@
 
-ContentCuration=Content Curation
+ContentCuration=Curator
 
 MissingWoT = Missing Web of Trust plugin
 MissingWoTLong = Content Curation requires the Web of Trust (WoT) plugin
@@ -25,12 +25,18 @@ CurateThisContentPage.URILabel = FreenetURI
 CurateThisContentPage.TitleLabel = Title of the content (Max. 65 char)
 CurateThisContentPage.TagsLabel = Help people to find the content by adding keyphrases (max. 3).
 
+CurateDoc.MIME = Treat the file as this MIME type (leave this blank to let Freenet auto-detect the MIME type)
+
 
 #Plugin menu
 WebInterface.CuratorMenuItem.Home = About
 WebInterface.CuratorMenuItem.Home.Tooltip = General info on the plugin
-WebInterface.CuratorMenuItem.CurateWebPage = Curate content
-WebInterface.CuratorMenuItem.CurateWebPage.Tooltip = Select a WoT identity and publish new content in its index
+WebInterface.CuratorMenuItem.CurateWebPage = Curate web contents
+WebInterface.CuratorMenuItem.CurateWebPage.Tooltip = Insert Freenet web sites in a curator's index.
+WebInterface.CuratorMenuItem.CurateFilePage = Curate file contents
+WebInterface.CuratorMenuItem.CurateFilePage.Tooltip = Insert Freenet documents in a curator's index.
+
+
 
 WebInterface.Curator = ContentCuration
 WebInterface.Curator.Tooltip = CCur Plugin, your place to curate Freenet Content and share files.

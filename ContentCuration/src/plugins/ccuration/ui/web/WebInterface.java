@@ -37,6 +37,7 @@ public class WebInterface {
 	// Visible
 	private final WebInterfaceToadlet homeToadlet;
 	private final WebInterfaceToadlet uploadWebToadlet;
+	private final WebInterfaceToadlet uploadFileToadlet;
 	
 
 	private final String mURI;
@@ -76,15 +77,15 @@ public class WebInterface {
 		}
 	}
 	
-	public class CurateThisItemInterfaceToadlet extends WebInterfaceToadlet {
+	public class CurateWebPageInterfaceToadlet extends WebInterfaceToadlet {
 	
-		protected CurateThisItemInterfaceToadlet(HighLevelSimpleClient client, WebInterface wi, NodeClientCore core, String pageTitle) {
+		protected CurateWebPageInterfaceToadlet(HighLevelSimpleClient client, WebInterface wi, NodeClientCore core, String pageTitle) {
 			super(client, wi, core, pageTitle);
 		}
 		
 		@Override
 		WebPage makeWebPage(HTTPRequest req, ToadletContext context) {
-			return new CurateThisContent(this, req, context, l10n());
+			return new CurateFreenetWebPage(this, req, context, l10n());
 		}
 		
 		@Override
@@ -116,6 +117,46 @@ public class WebInterface {
 	}	
 	
 	
+	public class CurateDocumentInterfaceToadlet extends WebInterfaceToadlet {
+	
+		protected CurateDocumentInterfaceToadlet(HighLevelSimpleClient client, WebInterface wi, NodeClientCore core, String pageTitle) {
+			super(client, wi, core, pageTitle);
+		}
+		
+		@Override
+		WebPage makeWebPage(HTTPRequest req, ToadletContext context) {
+			return new CurateFreenetWebPage(this, req, context, l10n());
+		}
+		
+		@Override
+		public void handleMethodGET(URI uri, HTTPRequest req, ToadletContext ctx)
+				throws ToadletContextClosedException, IOException,
+				RedirectException {
+			final PageNode pageNode = ContentCuration.getPluginRespirator().getPageMaker().getPageNode(ContentCuration.getName(), ctx);
+			if (!this.makeGlobalChecks(pageNode, uri, req, ctx)) {
+				return;
+			}
+			super.handleMethodGET(uri, req, ctx);
+			
+	
+		}
+	
+		@Override
+		public void handleMethodPOST(URI uri, HTTPRequest req,
+				ToadletContext ctx) throws ToadletContextClosedException,
+				IOException, RedirectException {
+			final PageNode pageNode = ContentCuration.getPluginRespirator().getPageMaker().getPageNode(ContentCuration.getName(), ctx);
+			if (!this.makeGlobalChecks(pageNode, uri, req, ctx)) {
+				return;
+			}
+			super.handleMethodPOST(uri, req, ctx);
+			
+	
+		}
+	
+	}
+
+
 	public WebInterface(ContentCuration myWoT, String uri) {
 		myCCur = myWoT;
 		mURI = uri;
@@ -129,10 +170,12 @@ public class WebInterface {
 		// Visible pages
 		
 		homeToadlet = new HomeWebInterfaceToadlet(null, this, ContentCuration.getPluginRespirator().getNode().clientCore, "About");
-		uploadWebToadlet = new CurateThisItemInterfaceToadlet(null, this, ContentCuration.getPluginRespirator().getNode().clientCore, "CurateWebPage");
+		uploadWebToadlet = new CurateDocumentInterfaceToadlet(null, this, ContentCuration.getPluginRespirator().getNode().clientCore, "CurateWebPage");
+		uploadFileToadlet = new CurateDocumentInterfaceToadlet(null, this, ContentCuration.getPluginRespirator().getNode().clientCore, "CurateFile");
 		
 		container.register(homeToadlet, "WebInterface.Curator", mURI+"/", true, "WebInterface.CuratorMenuItem.Home", "WebInterface.CuratorMenuItem.Home.Tooltip", false, null);
 		container.register(uploadWebToadlet, "WebInterface.Curator", mURI+"/CurateWebPage", true, "WebInterface.CuratorMenuItem.CurateWebPage", "WebInterface.CuratorMenuItem.CurateWebPage.Tooltip", false, null);
+		container.register(uploadFileToadlet, "WebInterface.Curator", mURI+"/CurateFilePage", true, "WebInterface.CuratorMenuItem.CurateFilePage", "WebInterface.CuratorMenuItem.CurateFilePage.Tooltip", false, null);
 	}
 	
 	public String getURI() {
@@ -151,8 +194,9 @@ public class WebInterface {
 		ToadletContainer container = mPluginRespirator.getToadletContainer();
 		for(Toadlet t : new Toadlet[] { 
 				homeToadlet,
-				uploadWebToadlet
+				uploadWebToadlet,
+				uploadFileToadlet
 		}) container.unregister(t);
-		mPageMaker.removeNavigationCategory("WebInterface.HelloPlugin");
+		mPageMaker.removeNavigationCategory("WebInterface.Curator");
 	}
 }

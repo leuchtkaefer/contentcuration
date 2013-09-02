@@ -22,7 +22,7 @@ abstract public class TermEntry implements Comparable<TermEntry> {
 	//final static long serialVersionUID = 0x42L;
 	
 	public enum EntryType {
-		INDEX, TERM, PAGE
+		INDEX, TERM, PAGE, FILE
 	};
 
 	/**
@@ -101,6 +101,8 @@ abstract public class TermEntry implements Comparable<TermEntry> {
 	*/
 	public abstract boolean equalsTarget(TermEntry entry);
 
+	public abstract void putPosition(int position);
+	
 	/**
 	** {@inheritDoc}
 	**
