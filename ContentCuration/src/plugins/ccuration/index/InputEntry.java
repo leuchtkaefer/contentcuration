@@ -110,7 +110,7 @@ public class InputEntry implements ContentCurationConstants{
 	    	 return this;
 	     }  
 	     public Builder mime(String val) {
-	    	 if (val==null){
+	    	 if (val==null){ //TODO leuchtkaefer (!(val instanceOf(String)))
 	    		 mime = DefaultMIMETypes.guessMIMEType(uri.getDocName(),false);
 	    	 } else {
 		    	 mime = val;	    		 
@@ -123,7 +123,7 @@ public class InputEntry implements ContentCurationConstants{
 	     }
 	     
 	 	/**
-	 	 * Process title 
+	 	 * Process doc name, title, tags 
 	 	 * @param t
 	 	 */
 	 	private void processEntryItem(String e, EntryType t) {

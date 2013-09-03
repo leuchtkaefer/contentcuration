@@ -49,7 +49,7 @@ public class AboutPage extends WebPageImpl {
 		list2.addChild(new HTMLNode("li", l10n().getString("AboutPage.SummaryBox.Section2ThirdRecord")));
 		section2.addChild(list2).addChild("br");
 		final HTMLNode links = section2.addChild("p");
-		links.addChild("a", "href", "javascript:(function(){newURI='http://localhost:8888/ContentCuration/UploadSomething?formPassword=uDbgQanWv9UnXk4bXSCl1w&addNewURI='+encodeURIComponent(window.location.href)+'&addDocTitle='+encodeURIComponent(document.title);window.location=newURI})();", "FreeCurateIt");
+		links.addChild("a", "href", "javascript:(function(){newURI='http://localhost:8888/ContentCuration/CurateWebPage?addNewURI='+encodeURIComponent(window.location.href)+'&addDocTitle='+encodeURIComponent(document.title);window.location=newURI})();", "FreeCurateIt");
 	
 	}
 	

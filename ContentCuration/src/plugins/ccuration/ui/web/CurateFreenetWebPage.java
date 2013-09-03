@@ -71,10 +71,10 @@ public class CurateFreenetWebPage extends WebPageImpl {
 		
 		if (nbOwnIdentities > 0) {
 			try {
+			System.out.println("bookmarklet and doctitle "+ bookmarkletURI+" "+ docTitle);
 			curateIt(bookmarkletURI,docTitle);
 			} catch (MalformedURLException e) {
-				Logger.error(this, "Error", e);
-				addErrorBox("Error", e);
+				makeNoURLWarning();
 			}
 		} else {
 			makeNoOwnIdentityWarning();
@@ -193,8 +193,16 @@ public class CurateFreenetWebPage extends WebPageImpl {
 	private void makeNoOwnIdentityWarning() {
 		addErrorBox(
 				l10n().getString(
-						"UploadSomethingPage.NoOwnIdentityWarning.Header"),
+						"CurateThisContentPage.NoOwnIdentityWarning.Header"),
 				l10n().getString(
-						"UploadSomethingPage.NoOwnIdentityWarning.Text"));
+						"CurateThisContentPage.NoOwnIdentityWarning.Text"));
+	}
+	
+	private void makeNoURLWarning() {
+		addErrorBox(
+				l10n().getString(
+						"CurateThisContentPage.NoURLWarning.Header"),
+				l10n().getString(
+						"CurateThisContentPage.NoURLWarning.Text"));
 	}
 }

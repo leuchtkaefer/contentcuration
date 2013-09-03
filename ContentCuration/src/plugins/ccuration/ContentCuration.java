@@ -1,7 +1,5 @@
 package plugins.ccuration;
 
-import java.util.Date;
-
 import plugins.ccuration.ui.web.WebInterface;
 import freenet.l10n.BaseL10n;
 import freenet.l10n.BaseL10n.LANGUAGE;
@@ -9,7 +7,9 @@ import freenet.l10n.PluginL10n;
 import freenet.pluginmanager.FredPlugin;
 import freenet.pluginmanager.FredPluginBaseL10n;
 import freenet.pluginmanager.FredPluginL10n;
+import freenet.pluginmanager.FredPluginRealVersioned;
 import freenet.pluginmanager.FredPluginThreadless;
+import freenet.pluginmanager.FredPluginVersioned;
 import freenet.pluginmanager.PluginNotFoundException;
 import freenet.pluginmanager.PluginRespirator;
 import freenet.support.Logger;
@@ -20,7 +20,7 @@ import freenet.support.Logger;
  * @author leuchtkaefer
  */
 //public class ContentCuration implements FredPlugin, FredPluginFCP, FredPluginThreadless, FredPluginL10n, FredPluginBaseL10n {
-public class ContentCuration implements FredPlugin, FredPluginThreadless, FredPluginL10n, FredPluginBaseL10n {
+public class ContentCuration implements FredPlugin, FredPluginThreadless, FredPluginL10n, FredPluginBaseL10n, FredPluginVersioned, FredPluginRealVersioned {
 	private static String PLUGIN_NAME;
 	
 	/* References from the node */
@@ -81,7 +81,7 @@ public class ContentCuration implements FredPlugin, FredPluginThreadless, FredPl
 	//	try {
 			Logger.normal(this, "ContentCuration starting up...");
 			ContentCuration.pr = pr;
-			System.err.println("Heartbeat from ContentCuration: " + (new Date()));
+			//System.err.println("Heartbeat from ContentCuration: " + (new Date()));
 			ContentCuration.PLUGIN_NAME = ContentCuration.getBaseL10n().getString("ContentCuration");
 			
 			mWebInterface = new WebInterface(this, SELF_URI);
@@ -170,6 +170,24 @@ public class ContentCuration implements FredPlugin, FredPluginThreadless, FredPl
 
 	public LibraryTalker getLibraryTalker() {
 		return librarytalker;
+	}
+
+	/**
+	 * Get the revision of this plugin.
+	 * @return Revision
+	 */
+	@Override
+	public long getRealVersion() {
+		return Version.REVISION;
+	}
+
+	/**
+	 * Get the formatted version of this plugin, for example "r0012" if revision 12.
+	 * @return Formatted version.
+	 */
+	@Override
+	public String getVersion() {
+		return Version.getVersion();
 	}
 
 
