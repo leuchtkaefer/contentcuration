@@ -108,6 +108,7 @@ public class LibraryTalker implements FredPluginTalker, ContentCurationConstants
 	
 	private void innerSend(Bucket bucket, InputEntry input) {
 		System.out.println("Leuchtkaefer master of curator, I reached innerSend");
+		System.out.println("Leuchtkaefer input size "+ input.getTpe().size());
 		SimpleFieldSet sfs = new SimpleFieldSet(true);
 		sfs.putSingle(COMMAND, PUSH_BUFFER);
 		sfs.putSingle(INSERT_URI, input.getPrivKey().toASCIIString());
@@ -146,15 +147,15 @@ public class LibraryTalker implements FredPluginTalker, ContentCurationConstants
 		meta.putSingle("index.owner.email", "private");
 		meta.writeTo(os);
 	
-		/*if (input.getInputType()==TermEntry.EntryType.FILE) {
-			for (TermFileEntry termFileEntry : input.getTpe()) {
-				TermEntryWriter.getInstance().writeObject(termFileEntry, os); //TODO leuchtkaefer I need to modify TermEntry to accept FIL
-			}	
-		} else if (input.getInputType()==TermEntry.EntryType.FILE) {
-			for (TermPageEntry termPageEntry : input.getTpe()) {
-				TermEntryWriter.getInstance().writeObject(termPageEntry, os); 
-			}
-		}*/
+//		if (input.getInputType()==TermEntry.EntryType.FILE) {
+//			for (TermFileEntry termFileEntry : input.getTpe()) {
+//				TermEntryWriter.getInstance().writeObject(termFileEntry, os); //TODO leuchtkaefer I need to modify TermEntry to accept FIL
+//			}	
+//		} else if (input.getInputType()==TermEntry.EntryType.FILE) {
+//			for (TermPageEntry termPageEntry : input.getTpe()) {
+//				TermEntryWriter.getInstance().writeObject(termPageEntry, os); 
+//			}
+//		}
 			
 		for (TermEntry termEntry : input.getTpe()) {
 			TermEntryWriter.getInstance().writeObject(termEntry, os); //TODO leuchtkaefer I need to modify TermEntry to accept FIL

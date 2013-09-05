@@ -15,19 +15,22 @@ AboutPage.SummaryBox.Section2FirstRecord = A bookmarklet is a bookmark that cont
 AboutPage.SummaryBox.Section2SecondRecord = You can curate content easily by pressing a bookmarklet button while you visit a page or download Freenet content.
 AboutPage.SummaryBox.Section2ThirdRecord = Just drag and drop the link "FreeCurateIt" to the navigation bar and start curating items in Freenet.
 
-CurateThisContentPage.SelectWoTIdentity.Header = Curate this item in Freenet
+#Warning messages
 CurateThisContentPage.NoOwnIdentityWarning.Header = No own identity found
 CurateThisContentPage.NoOwnIdentityWarning.Text = You should create an identity first using the WoT plugin.
 CurateThisContentPage.NoURLWarning.Header = The FreenetURI provided can not converted to a valid FreenetURI format.
-CurateThisContentPage.NoURLWarning.Text = Please insert a valid FreenetURI. The address of an SSK looks like http://127.0.0.1:8888/SSK@CxRxWs...BAAE/mysite-4. Keep in mind that you can only curate content that is in Freenet and has a valid FreenetURI.
+CurateThisContentPage.NoURLWarning.Text = Please insert a valid FreenetURI. The address of an SSK looks like http://127.0.0.1:8888/SSK@CxRxWs...BAAE/mysite-4. Keep in mind that you can only curate content that is in Freenet and has a valid FreenetURI. Use the menu for a blank form.
 CurateThisContent.SelectOwnIdentity.Failed = Error while selecting the OwnIdentity
+
+#Forms labels
+CurateThisContentPage.SelectWoTIdentity.Header = Curate this item in Freenet
 CurateThisContentPage.AuthorLabel = Select the WoT identity who curates this content
 CurateThisContentPage.TermLabel = Curate content under this category
 CurateThisContentPage.URILabel = FreenetURI
 CurateThisContentPage.TitleLabel = Title of the content (Max. 65 char)
 CurateThisContentPage.TagsLabel = Help people to find the content by adding keyphrases (max. 3).
-
-CurateDoc.MIME = Treat the file as this MIME type (leave this blank to let Freenet auto-detect the MIME type)
+CurateDoc.DescriptionLabel = Description of the file (Max. 180 char)
+CurateDoc.MIMELabel = Treat the file as this MIME type (leave this blank to let Freenet auto-detect the MIME type)
 
 
 #Plugin menu

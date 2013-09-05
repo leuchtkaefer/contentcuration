@@ -57,6 +57,8 @@ public class InputEntry implements ContentCurationConstants{
 		lastPosition = builder.lastPosition;
 		totalWords = builder.totalWords;
 		tpes = builder.tpes;
+		
+		System.out.println("Inside InputEntry constructor, tpes size "+ tpes.size());
 	}
 	
 	public static class Builder {
@@ -98,6 +100,8 @@ public class InputEntry implements ContentCurationConstants{
 					processEntryItem(keyphrase, EntryType.TAG);
 				}
 			}
+			
+			System.out.println("Inside new InputEntry builder, totalWords" + totalWords);
 	     }
 	
 	     public Builder title(String val) {
@@ -107,6 +111,7 @@ public class InputEntry implements ContentCurationConstants{
 	     }
 	     public Builder description(String val) {  
 	    	 description = val;
+	    	 processEntryItem(val, EntryType.DESCRIPTION);
 	    	 return this;
 	     }  
 	     public Builder mime(String val) {
@@ -184,7 +189,7 @@ public class InputEntry implements ContentCurationConstants{
 		 * @throws java.lang.Exception
 		 */
 		private void addWord(String word, int position) {
-			if (inputType == TermEntry.EntryType.FILE) {
+			if (inputType == TermEntry.EntryType.PAGE) {
 				TermPageEntry tp = getPageEntry(word);
 				tp.putPosition(position);
 			} else if (inputType == TermEntry.EntryType.FILE) {

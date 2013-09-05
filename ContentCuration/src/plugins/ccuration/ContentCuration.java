@@ -61,7 +61,7 @@ public class ContentCuration implements FredPlugin, FredPluginThreadless, FredPl
 		super();
 		if(logDEBUG) Logger.debug(this, "ContentCuration plugin constructed.");
 	}
-
+	
 	public void terminate() {
 		if (logDEBUG)
 			Logger.debug(this, "ContentCuration terminating ...");

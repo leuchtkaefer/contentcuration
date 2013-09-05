@@ -11,5 +11,5 @@ public interface ContentCurationConstants {
 	public static final String REQUEST_URI = "requestURI";
 	public static final String CONTENT_CURATOR = "ContentCurator";
 	
-	enum EntryType {TITLE, DOC_NAME, CATEGORY, TAG};
+	enum EntryType {TITLE, DOC_NAME, CATEGORY, TAG, DESCRIPTION};
 }

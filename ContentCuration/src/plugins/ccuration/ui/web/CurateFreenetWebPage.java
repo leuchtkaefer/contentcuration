@@ -71,7 +71,6 @@ public class CurateFreenetWebPage extends WebPageImpl {
 		
 		if (nbOwnIdentities > 0) {
 			try {
-			System.out.println("bookmarklet and doctitle "+ bookmarkletURI+" "+ docTitle);
 			curateIt(bookmarkletURI,docTitle);
 			} catch (MalformedURLException e) {
 				makeNoURLWarning();
@@ -108,11 +107,11 @@ public class CurateFreenetWebPage extends WebPageImpl {
 					pubURI = pubURI.setDocName("index").setSuggestedEdition(0);
 					privURI = privURI.setDocName("index").setSuggestedEdition(0);
 					
-					//TODO category is NOT uses. I need another index file!!!!
+					//TODO category is NOT used. I need another index file!!!!
 					//TODO leuchtkaefer check that all needed inputs are not empty pageTitle, category. Tags are optional					
 					entry = new InputEntry.Builder(privURI, pubURI, new FreenetURI(docURI), TermEntry.EntryType.PAGE,tags).title(pageTitle).build();
 					//entry = new InputEntry(privURI, pubURI, category, new FreenetURI(docURI), pageTitle, tags, null);
-					
+					System.out.println("tpe values inside entry " + entry.getTpe().size());
 				} catch (MalformedURLException e1) {
 					Logger.error(this, "Error while forming the URI", e1);
 					System.out.println("Leuchtkaefer MalformedURLException "

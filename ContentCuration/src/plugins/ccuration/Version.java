@@ -37,7 +37,7 @@ public class Version {
 	public static final long RELEASE = 1;
 
 	public static String getRevision() {
-		return Version.gitRevision;
+		return gitRevision;
 	}
 
 	/**

@@ -125,7 +125,7 @@ public class WebInterface {
 		
 		@Override
 		WebPage makeWebPage(HTTPRequest req, ToadletContext context) {
-			return new CurateFreenetWebPage(this, req, context, l10n());
+			return new CurateFreenetFile(this, req, context, l10n());
 		}
 		
 		@Override
@@ -170,8 +170,8 @@ public class WebInterface {
 		// Visible pages
 		
 		homeToadlet = new HomeWebInterfaceToadlet(null, this, ContentCuration.getPluginRespirator().getNode().clientCore, "About");
-		uploadWebToadlet = new CurateDocumentInterfaceToadlet(null, this, ContentCuration.getPluginRespirator().getNode().clientCore, "CurateWebPage");
-		uploadFileToadlet = new CurateDocumentInterfaceToadlet(null, this, ContentCuration.getPluginRespirator().getNode().clientCore, "CurateFile");
+		uploadWebToadlet = new CurateWebPageInterfaceToadlet(null, this, ContentCuration.getPluginRespirator().getNode().clientCore, "CurateWebPage");
+		uploadFileToadlet = new CurateDocumentInterfaceToadlet(null, this, ContentCuration.getPluginRespirator().getNode().clientCore, "CurateFilePage");
 		
 		container.register(homeToadlet, "WebInterface.Curator", mURI+"/", true, "WebInterface.CuratorMenuItem.Home", "WebInterface.CuratorMenuItem.Home.Tooltip", false, null);
 		container.register(uploadWebToadlet, "WebInterface.Curator", mURI+"/CurateWebPage", true, "WebInterface.CuratorMenuItem.CurateWebPage", "WebInterface.CuratorMenuItem.CurateWebPage.Tooltip", false, null);
