@@ -17,6 +17,7 @@
 package plugins.ccuration.fcp.wot;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
@@ -31,10 +32,48 @@ import freenet.support.api.Bucket;
 /**
  * Used to get WoT identities.
  *
- * @author Artefact2
+ * @author Artefact2, leuchtkaefer
  */
 public class WoTOwnIdentities {
 
+	public static final String CCURATION_CONTEXT = "Curator";
+	
+	/**
+	 * Check if the identity has "Curator" in Contexts. 
+	 * @param author The public key hash for an identity is referred to in the source code as the identity's ID, yet the field name for it is the identity's "Identity".
+	 * @return
+	 * @throws PluginNotFoundException 
+	 */
+	public static Boolean identityIsARegisteredPublisher(String author) throws PluginNotFoundException {
+		List<String> contexts = getWoTIdentitiesContext().get(author);
+		return contexts.contains(CCURATION_CONTEXT);
+	}
+	
+	/**
+	 * Sets the identity's context value. Identities that publish indexes need to include "Curator" in the context's values.  
+	 * @param author The public key hash for an identity is referred to in the source code as the identity's ID, yet the field name for it is the identity's "Identity".
+	 * @throws PluginNotFoundException
+	 */
+	public static void registerIdentity(String author) throws PluginNotFoundException {
+			final SimpleFieldSet sfs = new SimpleFieldSet(true);
+			sfs.putOverwrite("Message", "AddContext");
+			sfs.putOverwrite("Identity", author);
+			sfs.putOverwrite("Context", CCURATION_CONTEXT);
+
+			SyncPluginTalker spt = new SyncPluginTalker(new ReceptorCore() {
+
+				public void onReply(String pluginname, String indentifier, SimpleFieldSet params, Bucket data) {
+					//assert(params.get("Message").equals("ContextAdded"));
+					if (params.get("Message").equals("ContextAdded"))
+						Logger.debug(params.get("Message"), "Adding context succesfully");
+					else
+						Logger.debug(params.get("Message"), "No error while adding context");
+				}
+			}, sfs, null);
+
+			spt.run();
+	} 
+	
 	/**
 	 * Get the nicknames of WoT identities. The map is <"ID", "Nickname (ID)">.
 	 * @return Map of WoT identities.
@@ -46,7 +85,7 @@ public class WoTOwnIdentities {
 
 	/**
 	 * Get the request URI of a given author ID.
-	 * @param author Author ID.
+	 * @param author The public key hash for an identity is referred to in the source code as the identity's ID, yet the field name for it is the identity's "Identity".
 	 * @return Request URI of this identity.
 	 */
 	public static String getRequestURI(String author) {
@@ -59,7 +98,7 @@ public class WoTOwnIdentities {
 	
 	/**
 	 * Get the insert URI of a given author ID.
-	 * @param author Author ID.
+	 * @param author The public key hash for an identity is referred to in the source code as the identity's ID, yet the field name for it is the identity's "Identity".
 	 * @return Insert URI of this identity.
 	 */
 	public static String getInsertURI(String author) {
@@ -70,9 +109,67 @@ public class WoTOwnIdentities {
 		}
 	}
 	
+	/**
+	 * Get all Contexts from WoTOwnidentities. 
+	 * @param field Field to get, eg "Nickname" or "InsertURI".
+	 * @return Map of the requested data.
+	 * @throws PluginNotFoundException
+	 */
+	public static Map<String, List<String>> getWoTIdentitiesContext() throws PluginNotFoundException {
+		final Map<String, List<String>> identities = new HashMap<String, List<String>>();
+		final SimpleFieldSet sfs = new SimpleFieldSet(true);
+		sfs.putOverwrite("Message", "GetOwnIdentities");
+
+		SyncPluginTalker spt = new SyncPluginTalker(new ReceptorCore() {
+
+			public void onReply(String pluginname, String indentifier, SimpleFieldSet params, Bucket data) {
+				try {
+					if (params.getString("Message").equals("OwnIdentities")) {
+						Vector<String> identifiers = new Vector<String>();
+						Vector<Integer> counter = new Vector<Integer>(); 
+						Vector<String> contexts = new Vector<String>();				
+						for (final String s : params.toOrderedString().split("\n")) {
+							if (s.startsWith("Identity")) {
+								identifiers.add(s.split("=")[1]);
+								counter.add(0);
+								System.out.println("ident" + s.split("=")[1]);
+							} else if (s.startsWith("Contexts")) {
+								String[] v = s.split("=");
+								System.out.println("context0 " + v[0]);
+								System.out.println("context1 " + v[1]);
+								String[] w = v[0].split(".Context");
+								System.out.println("contextv0 " + w[0].substring(8));
+								System.out.println("contextv1 " + w[1]);		
+								counter.set(Integer.parseInt(w[0].substring(8)), Integer.parseInt(w[1])); 
+								contexts.add(v[1]);								
+							}
+						}
+
+						assert (identifiers.size() == counter.size());
+
+						for (int i = 0; i < identifiers.size(); ++i) {
+							int qty = counter.elementAt(i)+1;
+							int init = qty*i;	
+							System.out.println("init " + qty*i);
+							System.out.println("qty " + qty);
+							identities.put(identifiers.get(i), contexts.subList(init, init + qty)); 
+						}
+					} else {
+						Logger.error(this, "Unexpected message : " + params.getString("Message"));
+					}
+				} catch (FSParseException ex) {
+					Logger.error(this, "WoTOwnIdentities : Parse error !");
+				}
+			}
+		}, sfs, null);
+
+		spt.run();
+
+		return identities;
+	}
 
 	/**
-	 * Get a specific field from WoT identities.
+	 * Get a specific field from WoT identities. This function doesn't work for getting Contexts or Properties
 	 * @param field Field to get, eg "Nickname" or "InsertURI".
 	 * @return Map of the requested data.
 	 * @throws PluginNotFoundException
@@ -95,12 +192,15 @@ public class WoTOwnIdentities {
 							} else if (s.startsWith(field)) {
 								nicknames.add(s.split("=")[1]);
 							}
+							if (field == "Contexts") {
+								System.out.println("what contexts "+ s);
+							}
 						}
 
+						
 						assert (identifiers.size() == nicknames.size());
 
 						for (int i = 0; i < identifiers.size(); ++i) {
-						//	identities.put(identifiers.get(i), nicknames.get(i) + " (" + identifiers.get(i) + ")");
 							identities.put(identifiers.get(i), nicknames.get(i));
 						}
 					} else {

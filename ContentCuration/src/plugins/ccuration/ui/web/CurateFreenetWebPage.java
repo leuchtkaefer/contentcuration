@@ -7,6 +7,7 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import plugins.ccuration.ContentCuration;
@@ -30,7 +31,7 @@ import freenet.support.api.HTTPRequest;
  * @author leuchtkaefer
  */
 public class CurateFreenetWebPage extends WebPageImpl {
-
+	
 	/**
 	 * Creates a webpage.
 	 * 
@@ -49,6 +50,7 @@ public class CurateFreenetWebPage extends WebPageImpl {
 	public void make() {
 		String content = null;
 		int nbOwnIdentities = 0;
+		
 		String buttonNewContentValue = request.getPartAsStringFailsafe(
 				"buttonNewContent", 128);
 		InputEntry entry; 
@@ -96,6 +98,15 @@ public class CurateFreenetWebPage extends WebPageImpl {
 			tags.add(request.getPartAsStringFailsafe("tag2", 155));
 			tags.add(request.getPartAsStringFailsafe("tag3", 155));
 			
+			try {
+				if (!WoTOwnIdentities.identityIsARegisteredPublisher(identity)) {
+					WoTOwnIdentities.registerIdentity(identity);
+				} 
+			} catch (PluginNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 			if (Utils.validString(category) && Utils.validString(docURI)) {
 				try {
 					final String insertURI = WoTOwnIdentities
@@ -110,7 +121,7 @@ public class CurateFreenetWebPage extends WebPageImpl {
 					//TODO category is NOT used. I need another index file!!!!
 					//TODO leuchtkaefer check that all needed inputs are not empty pageTitle, category. Tags are optional					
 					entry = new InputEntry.Builder(privURI, pubURI, new FreenetURI(docURI), TermEntry.EntryType.PAGE,tags).title(pageTitle).build();
-					//entry = new InputEntry(privURI, pubURI, category, new FreenetURI(docURI), pageTitle, tags, null);
+					
 					System.out.println("tpe values inside entry " + entry.getTpe().size());
 				} catch (MalformedURLException e1) {
 					Logger.error(this, "Error while forming the URI", e1);
