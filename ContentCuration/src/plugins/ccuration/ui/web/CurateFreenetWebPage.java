@@ -49,8 +49,12 @@ public class CurateFreenetWebPage extends WebPageImpl {
 
 	public void make() {
 		String content = null;
+		String activeIdentity = null;
 		int nbOwnIdentities = 0;
-		
+		String selectedIdentity = request.getPartAsStringFailsafe(
+				"OwnerID", 128);
+		String buttonChosenIdentity = request.getPartAsStringFailsafe(
+				"buttonChooseIdentity", 128);
 		String buttonNewContentValue = request.getPartAsStringFailsafe(
 				"buttonNewContent", 128);
 		InputEntry entry; 
@@ -71,49 +75,45 @@ public class CurateFreenetWebPage extends WebPageImpl {
 			}
 		}
 		
-		if (nbOwnIdentities > 0) {
-			try {
-			curateIt(bookmarkletURI,docTitle);
-			} catch (MalformedURLException e) {
-				makeNoURLWarning();
-			}
-		} else {
-			makeNoOwnIdentityWarning();
-		}	
-
-		
 		if (!buttonNewContentValue.equals("")) { // TODO leuchtkaefer check
 			content = buttonNewContentValue;
 		}
+		
+		if (!buttonChosenIdentity.equals("")) {
+			activeIdentity = selectedIdentity;
+		} 
 
+		try {
+			if (nbOwnIdentities > 0) {
+				selectIdentity(activeIdentity);
+			} else {
+			makeNoOwnIdentityWarning();
+			}
+			if (activeIdentity != null) {
+				curateIt("", "", activeIdentity);
+			}
+		} catch (MalformedURLException e) {
+			makeNoURLWarning();
+		}
+		
 		// Actions done when addingNewContent button is pressed
 		if (content != null) {
 			String category = request.getPartAsStringFailsafe("term", 128);
 			String docURI = request.getPartAsStringFailsafe("newContentURI", 128);
-			String identity = request.getPartAsStringFailsafe("OwnerID", 128);
+			String activeID = request.getPartAsStringFailsafe("currentID", 128);
 			String pageTitle = request.getPartAsStringFailsafe("title", 65);
-			
 			Collection<String> tags = new ArrayList<String>();
 			tags.add(request.getPartAsStringFailsafe("tag1", 155));
 			tags.add(request.getPartAsStringFailsafe("tag2", 155));
 			tags.add(request.getPartAsStringFailsafe("tag3", 155));
 			
-			try {
-				if (!WoTOwnIdentities.identityIsARegisteredPublisher(identity)) {
-					WoTOwnIdentities.registerIdentity(identity);
-				} 
-			} catch (PluginNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
 			if (Utils.validString(category) && Utils.validString(docURI)) {
 				try {
 					final String insertURI = WoTOwnIdentities
-							.getInsertURI(identity);
+							.getInsertURI(activeID);
 					FreenetURI privURI = new FreenetURI(insertURI);
 					final String requestURI = WoTOwnIdentities
-							.getRequestURI(identity);
+							.getRequestURI(activeID);
 					FreenetURI pubURI = new FreenetURI(requestURI);
 					pubURI = pubURI.setDocName("index").setSuggestedEdition(0);
 					privURI = privURI.setDocName("index").setSuggestedEdition(0);
@@ -122,49 +122,92 @@ public class CurateFreenetWebPage extends WebPageImpl {
 					//TODO leuchtkaefer check that all needed inputs are not empty pageTitle, category. Tags are optional					
 					entry = new InputEntry.Builder(privURI, pubURI, new FreenetURI(docURI), TermEntry.EntryType.PAGE,tags).title(pageTitle).build();
 					
-					System.out.println("tpe values inside entry " + entry.getTpe().size());
+					//publish the identity'index
+					if (!WoTOwnIdentities.identityIsARegisteredPublisher(activeID)) {
+							WoTOwnIdentities.registerIdentity(activeID);				
+					}
+					WoTOwnIdentities.registerIndex(activeID, category, pubURI.toASCIIString());
+					
 				} catch (MalformedURLException e1) {
 					Logger.error(this, "Error while forming the URI", e1);
-					System.out.println("Leuchtkaefer MalformedURLException "
-							+ e1);
+					makeNoURLWarning();
+					return;
+				} catch (PluginNotFoundException e) {
+					Logger.error(this, "WoT plugin not found", e);
 					return;
 				}
+				
 				//send user's input to Library
 				LibraryTalker ltalker = cCur.getLibraryTalker();
 				ltalker.sendInput(entry);
+	
 			}else {
 				HTMLNode listBoxContent2 = addContentBox("Please include some data to publish in your index.");
 			}
 		}
 	}
 
-	private void curateIt(String uriContent, String title) throws MalformedURLException{
-		
+	/**
+	 * Makes a form to select a WoT identity
+	 * @param defaultSelectedValue
+	 * @throws MalformedURLException
+	 */
+	private void selectIdentity(String defaultSelectedValue)  throws MalformedURLException {
 		HTMLNode listBoxContent = addContentBox(l10n().getString(
 				"CurateThisContentPage.SelectWoTIdentity.Header"));
 		HTMLNode inputForm = pr.addFormChild(listBoxContent, uri,
-				"CurateItForm"); 
-		HTMLNode selectBox = new HTMLNode("select", "name", "OwnerID");
-
-		System.out.println("curateIt receives "+ (title.length()>0) != null ? title:"title is empty");
-		
+				"SelectIdentityForm"); 
+		HTMLNode selectBox = new HTMLNode("select", "name", "OwnerID");		
 		synchronized (cCur) {
 			for (final String identityID : this.getWotIdentities().keySet()){
-				selectBox.addChild("option", "value", identityID, this
+				HTMLNode selectBoxElement = selectBox.addChild("option", "value", identityID, this
 						.getWotIdentities().get(identityID));
+				if (defaultSelectedValue != null && defaultSelectedValue.equals(identityID.toString())) {
+					selectBoxElement.addAttribute("selected", "selected");
+				}
 			}
-			selectBox.getChildren().get(0).addAttribute("selected", "selected"); //default value
 			
+			if (defaultSelectedValue == null) {
+				selectBox.getChildren().get(0).addAttribute("selected", "selected"); //default value
+			}
+			inputForm.addChild("br"); 
 		}
 		inputForm.addChild("p").addChild("label", "for", "Author",l10n().getString("CurateThisContentPage.AuthorLabel")).addChild("br")
-			.addChild(selectBox);	
-		inputForm.addChild("br");
+		.addChild(selectBox);
 		
-		inputForm.addChild("p").addChild("label", "for", "Term",l10n().getString("CurateThisContentPage.TermLabel")).addChild("br")
-			.addChild("input", new String[] { "type", "name", "size" },
-				new String[] { "text", "term", "30" });
-		inputForm.addChild("br");
+		inputForm.addChild("p").
+		addChild("input", new String[] { "type", "name", "value" },
+				new String[] { "submit", "buttonChooseIdentity",
+						"Use this identity" });
+	}
+	
+	/**
+	 * Creates the complete form to publish an element in a curated index.
+	 * @param uriContent
+	 * @param title
+	 * @param selectedIdentity
+	 * @throws MalformedURLException
+	 */
+	private void curateIt(String uriContent, String title, String selectedIdentity) throws MalformedURLException{
+		HTMLNode inputForm = makeMetadataForm(selectedIdentity);
 		
+		makeDataForm(uriContent, title, inputForm);
+		
+		inputForm.addChild("p").
+				addChild("input", new String[] { "type", "name", "value" },
+						new String[] { "submit", "buttonNewContent",
+								"addingNewContent" });
+	}
+
+	/**
+	 * Creates the data section form. The content of this section is different for web and document contents.
+	 * @param uriContent
+	 * @param title
+	 * @param inputForm
+	 * @throws MalformedURLException
+	 */
+	private void makeDataForm(String uriContent, String title,
+			HTMLNode inputForm) throws MalformedURLException {
 		HTMLNode uriBox = inputForm.addChild("p").addChild("label", "for", "URI",l10n().getString("CurateThisContentPage.URILabel")).addChild("br")
 			.addChild("input", new String[] { "type", "name", "size" },
 				new String[] { "text", "newContentURI", "128" });
@@ -174,6 +217,7 @@ public class CurateFreenetWebPage extends WebPageImpl {
 			String uriSSK = fURI.sskForUSK().toASCIIString(); //TODO leuchtkaefer support for CHK!		
 			uriBox.addAttribute("value", uriSSK);
 		}
+		
 		inputForm.addChild("br");
 		
 		HTMLNode titleBox = inputForm.addChild("p").addChild("label", "for", "Title",l10n().getString("CurateThisContentPage.TitleLabel")).addChild("br")
@@ -192,11 +236,41 @@ public class CurateFreenetWebPage extends WebPageImpl {
 		inputForm.addChild("input", new String[] { "type", "name", "size" },
 				new String[] { "text", "tag3", "155" });
 		inputForm.addChild("br");
+	}
+
+	/**
+	 * Creates the metadata section form. The content of this section is share by web and document contents
+	 * @param selectedIdentity
+	 * @return
+	 */
+	private HTMLNode makeMetadataForm(String selectedIdentity) {
+		HTMLNode listBoxContent2 = addContentBox(l10n().getString(
+				"CurateThisContentPage.WebContentForm.Header"));
+		HTMLNode inputForm = pr.addFormChild(listBoxContent2, uri,
+				"CurateItForm"); 
 		
-		inputForm.addChild("p").
-				addChild("input", new String[] { "type", "name", "value" },
-						new String[] { "submit", "buttonNewContent",
-								"addingNewContent" });
+		HTMLNode currentIdentity = inputForm.addChild("input", new String[] { "type", "name", "value" },
+						new String[] { "hidden", "currentID", "128" });
+			if (selectedIdentity.length()>0) {
+				currentIdentity.addAttribute("value", selectedIdentity.toString());
+			}
+
+		HTMLNode selectCategory = new HTMLNode("select", "name", "term");
+		
+		synchronized (cCur) {
+			inputForm.addChild("br"); 
+			
+			List<String> lis = this.getWotIndexCategories().get(selectedIdentity);
+			
+			for (final String categoryID : lis) {
+				selectCategory.addChild("option", "value", categoryID, categoryID); 
+			}
+			selectCategory.getChildren().get(0).addAttribute("selected", "selected");			
+		}
+			
+		inputForm.addChild("p").addChild("label", "for", "Term",l10n().getString("CurateThisContentPage.TermLabel")).addChild("br")
+		.addChild(selectCategory);
+		return inputForm;
 	}
 
 

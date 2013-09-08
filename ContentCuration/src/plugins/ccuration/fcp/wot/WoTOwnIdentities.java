@@ -16,6 +16,7 @@
  */
 package plugins.ccuration.fcp.wot;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,13 +31,21 @@ import freenet.support.SimpleFieldSet;
 import freenet.support.api.Bucket;
 
 /**
- * Used to get WoT identities.
+ * Methods to communicate with WoT
  *
- * @author Artefact2, leuchtkaefer
+ * @author leuchtkaefer
  */
 public class WoTOwnIdentities {
 
 	public static final String CCURATION_CONTEXT = "Curator";
+	public static final String IDENTITY_PROPERTY_INDEX_PREFIX = "Index.";
+	/**
+	 * Based on the format WoT stores identities'properties. Example: Properties0.Property1.Name=Index.culture
+	 */
+	public static final String IDENTITY_PROPERTY_PREFIX = "Properties";
+	public static final String IDENTITY_PROPERTY_PREFIX_INTERNAL = ".Property";
+	public static final String EMPTY_PUBLISHED_CATEGORIES_MSG = "This identity doesn't publish any index";
+	
 	
 	/**
 	 * Check if the identity has "Curator" in Contexts. 
@@ -48,6 +57,33 @@ public class WoTOwnIdentities {
 		List<String> contexts = getWoTIdentitiesContext().get(author);
 		return contexts.contains(CCURATION_CONTEXT);
 	}
+	
+	//TODO leuchtkaefer I need to update index with current version. Verify that the propertyValue 
+	/**
+	 * Sets the identity's property. It is use every time a new index is published by the identity. 
+	 * 
+	 * @param author The public key hash for an identity is referred to in the source code as the identity's ID, yet the field name for it is the identity's "Identity".
+	 * @param indexFileName The index'name identifies the category, which classifies all content stored in the index. 
+	 * @param propertyValue The full USK address of the index, including version.
+	 * @throws PluginNotFoundException
+	 */
+	public static void registerIndex(String author, String indexFileName, String propertyValue) throws PluginNotFoundException {
+		final SimpleFieldSet sfs = new SimpleFieldSet(true);
+		sfs.putOverwrite("Message", "SetProperty");   
+		sfs.putOverwrite("Identity", author);
+		sfs.putOverwrite("Property", IDENTITY_PROPERTY_INDEX_PREFIX + indexFileName);
+		sfs.putOverwrite("Value", propertyValue);
+
+		SyncPluginTalker spt = new SyncPluginTalker(new ReceptorCore() {
+
+			public void onReply(String pluginname, String indentifier, SimpleFieldSet params, Bucket data) {
+				assert(params.get("Message").equals("PropertyAdded"));
+			}
+		}, sfs, null);
+
+		spt.run();
+	}
+	
 	
 	/**
 	 * Sets the identity's context value. Identities that publish indexes need to include "Curator" in the context's values.  
@@ -111,7 +147,6 @@ public class WoTOwnIdentities {
 	
 	/**
 	 * Get all Contexts from WoTOwnidentities. 
-	 * @param field Field to get, eg "Nickname" or "InsertURI".
 	 * @return Map of the requested data.
 	 * @throws PluginNotFoundException
 	 */
@@ -168,6 +203,61 @@ public class WoTOwnIdentities {
 		return identities;
 	}
 
+	/**
+	 * Get all categories curated by WoTOwnidentities. 
+	 * @return Map of the requested data.
+	 * @throws PluginNotFoundException
+	 */
+	public static Map<String, List<String>> getWoTIdentitiesCuratedCategories() throws PluginNotFoundException {
+		final Map<String, List<String>> identities = new HashMap<String, List<String>>();
+		final SimpleFieldSet sfs = new SimpleFieldSet(true);
+		sfs.putOverwrite("Message", "GetOwnIdentities");
+
+		System.out.println("init getWoTIdentitiesCuratedCategories");
+		SyncPluginTalker spt = new SyncPluginTalker(new ReceptorCore() {
+
+			public void onReply(String pluginname, String indentifier, SimpleFieldSet params, Bucket data) {
+				try {
+					if (params.getString("Message").equals("OwnIdentities")) {
+						Vector<String> identifiers = new Vector<String>();
+						Vector<Integer> counter = new Vector<Integer>(); 
+						Vector<String> contexts = new Vector<String>();				
+						for (final String s : params.toOrderedString().split("\n")) {
+							if (s.startsWith("Identity")) {
+								identifiers.add(s.split("=")[1]);
+								counter.add(0);
+							} else if (s.startsWith(IDENTITY_PROPERTY_PREFIX)) { //Properties0.Property1.Name=Index.culture
+								String[] v = s.split(".Name=Index.");
+								if (v.length==2) { //We only wants strings that contains names and not values
+									String[] w = v[0].split(IDENTITY_PROPERTY_PREFIX_INTERNAL);
+									counter.set(Integer.parseInt(w[0].substring(IDENTITY_PROPERTY_PREFIX.length())), Integer.parseInt(w[1])); 
+									contexts.add(v[1]);								
+								}
+							}
+						}
+
+						int init = 0;
+						for (int i = 0; i < identifiers.size(); ++i) {
+							int qty = counter.elementAt(i);
+							if (qty>0) {
+								identities.put(identifiers.get(i), contexts.subList(init, init + qty)); //0,3//1,1
+							} else identities.put(identifiers.get(i), Arrays.asList(EMPTY_PUBLISHED_CATEGORIES_MSG));
+							init = init + qty;
+						}
+					} else {
+						Logger.error(this, "Unexpected message : " + params.getString("Message"));
+					}
+				} catch (FSParseException ex) {
+					Logger.error(this, "WoTOwnIdentities : Parse error !");
+				}
+			}
+		}, sfs, null);
+
+		spt.run();
+		
+		return identities;
+	}
+	
 	/**
 	 * Get a specific field from WoT identities. This function doesn't work for getting Contexts or Properties
 	 * @param field Field to get, eg "Nickname" or "InsertURI".

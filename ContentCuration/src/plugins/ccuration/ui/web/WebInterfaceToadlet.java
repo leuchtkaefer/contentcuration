@@ -2,6 +2,7 @@ package plugins.ccuration.ui.web;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.List;
 import java.util.Map;
 
 import plugins.ccuration.ContentCuration;
@@ -18,12 +19,18 @@ import freenet.node.NodeClientCore;
 import freenet.pluginmanager.PluginNotFoundException;
 import freenet.support.api.HTTPRequest;
 
+
 public abstract class WebInterfaceToadlet extends Toadlet {
 	
 	final String pageTitle;
 	final WebInterface webInterface;
 	final NodeClientCore core;
 	private Map<String, String> wotIdentities;
+	private Map<String, List<String>> wotCategories;
+
+	public Map<String, List<String>> getWotCategories() {
+		return wotCategories;
+	}
 
 	protected WebInterfaceToadlet(HighLevelSimpleClient client, WebInterface wi, NodeClientCore core, String pageTitle) {
 		super(client);
@@ -112,6 +119,7 @@ public abstract class WebInterfaceToadlet extends Toadlet {
 
 		try {
 			this.wotIdentities = WoTOwnIdentities.getWoTIdentities();
+			this.wotCategories = WoTOwnIdentities.getWoTIdentitiesCuratedCategories();
 		} catch (PluginNotFoundException ex) {
 			// Safe to ignore
 		}

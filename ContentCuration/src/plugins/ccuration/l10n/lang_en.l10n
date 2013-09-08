@@ -23,8 +23,9 @@ CurateThisContentPage.NoURLWarning.Text = Please insert a valid FreenetURI. The 
 CurateThisContent.SelectOwnIdentity.Failed = Error while selecting the OwnIdentity
 
 #Forms labels
-CurateThisContentPage.SelectWoTIdentity.Header = Curate this item in Freenet
-CurateThisContentPage.AuthorLabel = Select the WoT identity who curates this content
+CurateThisContentPage.SelectWoTIdentity.Header = Select WoT Identity
+CurateThisContentPage.WebContentForm.Header = Curate this item in Freenet
+CurateThisContentPage.AuthorLabel = The WoT identity who curates this content
 CurateThisContentPage.TermLabel = Curate content under this category
 CurateThisContentPage.URILabel = FreenetURI
 CurateThisContentPage.TitleLabel = Title of the content (Max. 65 char)

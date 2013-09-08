@@ -90,7 +90,11 @@ public class InputEntry implements ContentCurationConstants{
 		public Builder(FreenetURI privKey, FreenetURI pubKey, FreenetURI uri, TermEntry.EntryType inputType, Collection<String> tags) {  
 	         this.privKey = privKey;  
 	         this.pubKey = pubKey;
-	         this.uri = uri; 
+	         if (uri.isUSK()) {
+	        	 this.uri = uri.sskForUSK();
+	         } else {
+		         this.uri = uri; 	        	 
+	         }
 	         this.inputType = inputType;
 
 	 		processEntryItem(uri.getDocName(), EntryType.DOC_NAME);

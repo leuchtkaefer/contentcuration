@@ -15,6 +15,7 @@ import plugins.ccuration.fcp.wot.WoTOwnIdentities;
 import plugins.ccuration.index.InputEntry;
 import plugins.ccuration.index.TermEntry;
 import plugins.ccuration.index.TermEntryWriter;
+import plugins.ccuration.index.TermFileEntry;
 import plugins.ccuration.index.TermPageEntry;
 import freenet.keys.FreenetURI;
 import freenet.pluginmanager.FredPluginTalker;
@@ -146,17 +147,17 @@ public class LibraryTalker implements FredPluginTalker, ContentCurationConstants
 		}
 		meta.putSingle("index.owner.email", "private");
 		meta.writeTo(os);
-	
-//		if (input.getInputType()==TermEntry.EntryType.FILE) {
-//			for (TermFileEntry termFileEntry : input.getTpe()) {
-//				TermEntryWriter.getInstance().writeObject(termFileEntry, os); //TODO leuchtkaefer I need to modify TermEntry to accept FIL
-//			}	
-//		} else if (input.getInputType()==TermEntry.EntryType.FILE) {
-//			for (TermPageEntry termPageEntry : input.getTpe()) {
-//				TermEntryWriter.getInstance().writeObject(termPageEntry, os); 
-//			}
-//		}
-			
+/*	
+		if (input.getInputType()==TermEntry.EntryType.FILE) {
+			for (TermFileEntry termFileEntry : input.getTpe()) {
+				TermEntryWriter.getInstance().writeObject(termFileEntry, os); //TODO leuchtkaefer I need to modify TermEntry to accept FIL
+			}	
+		} else if (input.getInputType()==TermEntry.EntryType.PAGE) {
+			for (TermPageEntry termPageEntry : input.getTpe()) {
+				TermEntryWriter.getInstance().writeObject(termPageEntry, os); 
+			}
+		}
+*/			
 		for (TermEntry termEntry : input.getTpe()) {
 			TermEntryWriter.getInstance().writeObject(termEntry, os); //TODO leuchtkaefer I need to modify TermEntry to accept FIL
 		}
