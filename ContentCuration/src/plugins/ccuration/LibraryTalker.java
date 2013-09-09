@@ -114,6 +114,7 @@ public class LibraryTalker implements FredPluginTalker, ContentCurationConstants
 		sfs.putSingle(COMMAND, PUSH_BUFFER);
 		sfs.putSingle(INSERT_URI, input.getPrivKey().toASCIIString());
 		sfs.putSingle(HASH_PUBKEY, Base64.encode(input.getPubKey().getRoutingKey()));
+		sfs.putSingle(INDEX_NAME, input.getPubKey().getDocName());
 		/*
 		InputStream is = null; //TODO leuchtkaefer remove all this try
 		try{
@@ -141,7 +142,7 @@ public class LibraryTalker implements FredPluginTalker, ContentCurationConstants
 		SimpleFieldSet meta = new SimpleFieldSet(true); // Stored with data to make things easier.
 		String indexOwner = Base64.encode(input.getPubKey().getRoutingKey());
 		
-		meta.putSingle("index.title", "Content curated by WoT identity");
+		meta.putSingle("index.title", input.getPrivKey().getDocName());
 		if(indexOwner != null) {
 			meta.putSingle("index.owner.name", indexOwner);
 		}

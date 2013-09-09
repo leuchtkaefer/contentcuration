@@ -10,6 +10,7 @@ public interface ContentCurationConstants {
 	public static final String HASH_PUBKEY = "hashPubKey";
 	public static final String REQUEST_URI = "requestURI";
 	public static final String CONTENT_CURATOR = "ContentCurator";
+	public static final String INDEX_NAME = "indexName";
 	
 	enum EntryType {TITLE, DOC_NAME, CATEGORY, TAG, DESCRIPTION};
 }

@@ -135,8 +135,8 @@ public class CurateFreenetWebPage extends WebPageImpl {
 					final String requestURI = WoTOwnIdentities
 							.getRequestURI(activeID);
 					FreenetURI pubURI = new FreenetURI(requestURI);
-					pubURI = pubURI.setDocName("index").setSuggestedEdition(0);
-					privURI = privURI.setDocName("index").setSuggestedEdition(0);
+					pubURI = pubURI.setDocName(category).setSuggestedEdition(0);
+					privURI = privURI.setDocName(category).setSuggestedEdition(0);
 					
 					//TODO category is NOT used. I need another index file!!!!
 					//TODO leuchtkaefer check that all needed inputs are not empty pageTitle, category. Tags are optional					
