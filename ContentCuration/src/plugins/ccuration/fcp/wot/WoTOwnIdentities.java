@@ -221,26 +221,30 @@ public class WoTOwnIdentities {
 					if (params.getString("Message").equals("OwnIdentities")) {
 						Vector<String> identifiers = new Vector<String>();
 						Vector<Integer> counter = new Vector<Integer>(); 
-						Vector<String> contexts = new Vector<String>();				
-						for (final String s : params.toOrderedString().split("\n")) {
+						Vector<String> contexts = new Vector<String>();	
+						int ix, prev;
+;						for (final String s : params.toOrderedString().split("\n")) {
 							if (s.startsWith("Identity")) {
 								identifiers.add(s.split("=")[1]);
 								counter.add(0);
 							} else if (s.startsWith(IDENTITY_PROPERTY_PREFIX)) { //Properties0.Property1.Name=Index.culture
-								String[] v = s.split(".Name=Index.");
+								String[] v = s.split("\\.Name=Index\\.");
 								if (v.length==2) { //We only wants strings that contains names and not values
 									String[] w = v[0].split(IDENTITY_PROPERTY_PREFIX_INTERNAL);
-									counter.set(Integer.parseInt(w[0].substring(IDENTITY_PROPERTY_PREFIX.length())), Integer.parseInt(w[1])); 
-									contexts.add(v[1]);								
+									ix = Integer.parseInt(w[0].substring(IDENTITY_PROPERTY_PREFIX.length()));
+									prev = counter.get(ix);
+									counter.set(ix, ++prev); 
+									contexts.add(v[1]);	
 								}
 							}
 						}
-
-						int init = 0;
+						
+						assert (identifiers.size() == counter.size());
+						int qty, init = 0;
 						for (int i = 0; i < identifiers.size(); ++i) {
-							int qty = counter.elementAt(i);
+							qty = counter.elementAt(i);
 							if (qty>0) {
-								identities.put(identifiers.get(i), contexts.subList(init, init + qty)); //0,3//1,1
+								identities.put(identifiers.get(i), contexts.subList(init, init + qty)); 
 							} else identities.put(identifiers.get(i), Arrays.asList(EMPTY_PUBLISHED_CATEGORIES_MSG));
 							init = init + qty;
 						}

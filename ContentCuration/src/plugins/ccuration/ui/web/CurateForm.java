@@ -27,7 +27,7 @@ import freenet.support.api.HTTPRequest;
  * 
  * @author leuchtkaefer
  */
-public class CurateFreenetWebPage extends WebPageImpl {
+abstract class CurateForm extends WebPageImpl{
 	
 	/**
 	 * Creates a webpage.
@@ -38,7 +38,7 @@ public class CurateFreenetWebPage extends WebPageImpl {
 	 * @param myRequest
 	 *            The request sent by the user.
 	 */
-	public CurateFreenetWebPage(WebInterfaceToadlet toadlet,
+	public CurateForm(WebInterfaceToadlet toadlet,
 			HTTPRequest myRequest, ToadletContext context, BaseL10n _baseL10n) {
 		super(toadlet, myRequest, context, _baseL10n);
 
@@ -63,11 +63,7 @@ public class CurateFreenetWebPage extends WebPageImpl {
 				"currentID", 128);
 		
 		InputEntry entry; 
-				
-		//Inputs coming from bookmarklet button
-		String bookmarkletURI = request.getParam("addNewURI");
-		String docTitle = request.getParam("addDocTitle");
-		
+						
 		synchronized (cCur) {
 			Set<String> allOwnIdentities;
 			try {
@@ -109,7 +105,6 @@ public class CurateFreenetWebPage extends WebPageImpl {
 			makeNoOwnIdentityWarning();
 			}
 			if ((activeIdentity != null) && (activeIdentity.length()>0)) { //the user must set an active identity to get the CurateIt form 
-				System.out.println("active identity "+ activeIdentity);
 				curateIt("", "", activeIdentity,newIndex);
 			}
 		} catch (MalformedURLException e) {
@@ -129,17 +124,13 @@ public class CurateFreenetWebPage extends WebPageImpl {
 			
 			if (Utils.validString(category) && Utils.validString(docURI)) {
 				try {
-					final String insertURI = WoTOwnIdentities
-							.getInsertURI(activeID);
-					FreenetURI privURI = new FreenetURI(insertURI);
-					final String requestURI = WoTOwnIdentities
-							.getRequestURI(activeID);
-					FreenetURI pubURI = new FreenetURI(requestURI);
+					FreenetURI privURI = new FreenetURI(WoTOwnIdentities
+							.getInsertURI(activeID));
+					FreenetURI pubURI = new FreenetURI(WoTOwnIdentities
+							.getRequestURI(activeID));
 					pubURI = pubURI.setDocName(category).setSuggestedEdition(0);
 					privURI = privURI.setDocName(category).setSuggestedEdition(0);
-					
-					//TODO category is NOT used. I need another index file!!!!
-					//TODO leuchtkaefer check that all needed inputs are not empty pageTitle, category. Tags are optional					
+									
 					entry = new InputEntry.Builder(privURI, pubURI, new FreenetURI(docURI), TermEntry.EntryType.PAGE,tags).title(pageTitle).build();
 					
 					//publish the identity'index
@@ -172,7 +163,7 @@ public class CurateFreenetWebPage extends WebPageImpl {
 	 * @param defaultSelectedValue
 	 * @throws MalformedURLException
 	 */
-	private void selectIdentity(String defaultSelectedValue)  throws MalformedURLException {
+	protected void selectIdentity(String defaultSelectedValue)  throws MalformedURLException {
 		HTMLNode listBoxContent = addContentBox(l10n().getString(
 				"CurateThisContentPage.SelectWoTIdentity.Header"));
 		HTMLNode inputForm = pr.addFormChild(listBoxContent, uri,
@@ -208,7 +199,7 @@ public class CurateFreenetWebPage extends WebPageImpl {
 	 * @param selectedIdentity
 	 * @throws MalformedURLException
 	 */
-	private void curateIt(String uriContent, String title, String selectedIdentity, String index) throws MalformedURLException{
+	protected void curateIt(String uriContent, String title, String selectedIdentity, String index) throws MalformedURLException{
 		HTMLNode inputForm = makeMetadataForm(selectedIdentity, index);
 		if (inputForm != null) {
 			makeDataForm(uriContent, title, inputForm);
@@ -226,42 +217,8 @@ public class CurateFreenetWebPage extends WebPageImpl {
 	 * @param inputForm
 	 * @throws MalformedURLException
 	 */
-	private HTMLNode makeDataForm(String uriContent, String title, HTMLNode inputForm) throws MalformedURLException { //TODO remove inputForm2
-		
-		HTMLNode uriBox = inputForm.addChild("p").addChild("label", "for", "URI",l10n().getString("CurateThisContentPage.URILabel")).addChild("br")
-			.addChild("input", new String[] { "type", "name", "size" },
-				new String[] { "text", "newContentURI", "128" });
-		
-		if (uriContent.length()>0) {
-			FreenetURI fURI = new FreenetURI(uriContent);
-			String uriSSK = fURI.sskForUSK().toASCIIString(); //TODO leuchtkaefer support for CHK!		
-			uriBox.addAttribute("value", uriSSK);
-		}
-		
-		inputForm.addChild("br");
-		
-		HTMLNode titleBox = inputForm.addChild("p").addChild("label", "for", "Title",l10n().getString("CurateThisContentPage.TitleLabel")).addChild("br")
-			.addChild("input", new String[] { "type", "name", "size" },
-					new String[] { "text", "title", "65" });
-		if (title.length()>0) {
-			titleBox.addAttribute("value", title);
-		}
-		inputForm.addChild("br");
-	
-		inputForm.addChild("p").addChild("label", "for", "Term",l10n().getString("CurateThisContentPage.TagsLabel"));
-		inputForm.addChild("input", new String[] { "type", "name", "size" },
-					new String[] { "text", "tag1", "155" });
-		inputForm.addChild("input", new String[] { "type", "name", "size" },
-				new String[] { "text", "tag2", "155" });
-		inputForm.addChild("input", new String[] { "type", "name", "size" },
-				new String[] { "text", "tag3", "155" });
-		inputForm.addChild("br");
-		
-		return inputForm;
-	}
+	abstract protected HTMLNode makeDataForm(String uriContent, String title, HTMLNode inputForm) throws MalformedURLException; 
 
-	
-	
 	
 	/**
 	 * Creates the metadata section form. The content of this section is share by web and document contents
@@ -269,7 +226,6 @@ public class CurateFreenetWebPage extends WebPageImpl {
 	 * @return
 	 */
 	private HTMLNode makeMetadataForm(String selectedIdentity, String newAddedCategory) {
-		System.out.println("select identity "+ selectedIdentity);
 		HTMLNode listBoxContent2 = addContentBox(l10n().getString(
 				"CurateThisContentPage.DataInputForm.Header"));
 		HTMLNode inputForm = pr.addFormChild(listBoxContent2, uri,
@@ -315,7 +271,7 @@ public class CurateFreenetWebPage extends WebPageImpl {
 	}
 
 
-	private void makeNoOwnIdentityWarning() {
+	protected void makeNoOwnIdentityWarning() {
 		addErrorBox(
 				l10n().getString(
 						"CurateThisContentPage.NoOwnIdentityWarning.Header"),
@@ -323,7 +279,7 @@ public class CurateFreenetWebPage extends WebPageImpl {
 						"CurateThisContentPage.NoOwnIdentityWarning.Text"));
 	}
 	
-	private void makeNoURLWarning() {
+	protected void makeNoURLWarning() {
 		addErrorBox(
 				l10n().getString(
 						"CurateThisContentPage.NoURLWarning.Header"),

@@ -85,7 +85,8 @@ public class WebInterface {
 		
 		@Override
 		WebPage makeWebPage(HTTPRequest req, ToadletContext context) {
-			return new CurateFreenetWebPage(this, req, context, l10n());
+			//return new CurateFreenetWebPage(this, req, context, l10n());
+			return new WebCurateForm(this, req, context, l10n());
 		}
 		
 		@Override
@@ -125,7 +126,7 @@ public class WebInterface {
 		
 		@Override
 		WebPage makeWebPage(HTTPRequest req, ToadletContext context) {
-			return new CurateFreenetFile(this, req, context, l10n());
+			return new FileCurateForm(this, req, context, l10n());
 		}
 		
 		@Override

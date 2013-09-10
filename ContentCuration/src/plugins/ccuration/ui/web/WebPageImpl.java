@@ -53,13 +53,13 @@ public abstract class WebPageImpl implements WebPage {
 	protected final BaseL10n baseL10n;
 
 	protected final Map<String, String> wotIdentities;
-	protected final Map<String, List<String>> wotIndexCategories;
+//	protected final Map<String, List<String>> wotIndexCategories;
 	
-	
+	/*
 	public Map<String, List<String>> getWotIndexCategories() {
 		return wotIndexCategories;
 	}
-
+*/
 	public Map<String, String> getWotIdentities() {
 		return wotIdentities;
 	}
@@ -77,7 +77,7 @@ public abstract class WebPageImpl implements WebPage {
 		uri = toadlet.getURI();
 		baseL10n = _baseL10n;
 		wotIdentities = toadlet.getWoTIdentities();
-		wotIndexCategories = toadlet.getWotCategories();
+	//	wotIndexCategories = toadlet.getWotCategories();
 		
 		pr = cCur.getPluginRespirator();
 		this.pm = myWebInterface.getPageMaker();

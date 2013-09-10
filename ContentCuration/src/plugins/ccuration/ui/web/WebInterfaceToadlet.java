@@ -26,12 +26,7 @@ public abstract class WebInterfaceToadlet extends Toadlet {
 	final WebInterface webInterface;
 	final NodeClientCore core;
 	private Map<String, String> wotIdentities;
-	private Map<String, List<String>> wotCategories;
-
-	public Map<String, List<String>> getWotCategories() {
-		return wotCategories;
-	}
-
+	
 	protected WebInterfaceToadlet(HighLevelSimpleClient client, WebInterface wi, NodeClientCore core, String pageTitle) {
 		super(client);
 		this.pageTitle = pageTitle;
@@ -119,7 +114,6 @@ public abstract class WebInterfaceToadlet extends Toadlet {
 
 		try {
 			this.wotIdentities = WoTOwnIdentities.getWoTIdentities();
-			this.wotCategories = WoTOwnIdentities.getWoTIdentitiesCuratedCategories();
 		} catch (PluginNotFoundException ex) {
 			// Safe to ignore
 		}
