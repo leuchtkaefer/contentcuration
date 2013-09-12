@@ -26,6 +26,8 @@ public class InputEntry implements ContentCurationConstants{
 	private final String title;
 	private final FreenetURI uri;
 	private final TermEntry.EntryType inputType;
+	private final String description;
+	private final String mime;
 	private Integer lastPosition = null;
 	private int totalWords = 0;
 	private final Map<String, TermEntry> tpes;
@@ -57,6 +59,9 @@ public class InputEntry implements ContentCurationConstants{
 		lastPosition = builder.lastPosition;
 		totalWords = builder.totalWords;
 		tpes = builder.tpes;
+		description = builder.description;
+		mime = builder.mime;
+		System.out.println("this mime "+ this.mime);
 		
 		System.out.println("Inside InputEntry constructor, tpes size "+ tpes.size());
 	}
@@ -75,7 +80,7 @@ public class InputEntry implements ContentCurationConstants{
 		private String title = null; 
 		//Optional params files
 		private String description = null; 
-		private String mime = null; 
+		private String mime = null; //mime can be guess from document name
 		
 		/**
 		** Builder for InputEntry
@@ -119,10 +124,11 @@ public class InputEntry implements ContentCurationConstants{
 	    	 return this;
 	     }  
 	     public Builder mime(String val) {
-	    	 if (val==null){ //TODO leuchtkaefer (!(val instanceOf(String)))
+	    	 if (val.length()==0){
 	    		 mime = DefaultMIMETypes.guessMIMEType(uri.getDocName(),false);
+	    		 System.out.println("InputEntry mime guess type "+ mime);
 	    	 } else {
-		    	 mime = val;	    		 
+		    	 mime = val;
 	    	 }
 	    	 return this;
 	     }
@@ -141,6 +147,9 @@ public class InputEntry implements ContentCurationConstants{
 	 			if (lastPosition == null) {
 	 				lastPosition = 1;
 	 			}
+	 			if (mime==null) {
+	 				mime = DefaultMIMETypes.guessMIMEType(uri.getDocName(),false);
+	 			}
 	 			break;
 	 		case TITLE:
 	 			lastPosition = 1001;
@@ -153,6 +162,9 @@ public class InputEntry implements ContentCurationConstants{
 	 			} else {
 	 				lastPosition = 4001;
 	 			}
+	 			break;
+	 		case DESCRIPTION:
+	 			lastPosition = 5001;
 	 			break;
 	 		default:
 	 			// TODO leuchtkaefer it may handle category words

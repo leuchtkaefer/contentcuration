@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -90,20 +91,30 @@ public class LibraryTalker implements FredPluginTalker, ContentCurationConstants
 		if (identityList.isEmpty()) {
 			return;
 		}
+		
 		Iterator<String> WoTId = identityList.keySet().iterator();
+		FreenetURI insertURI;
 		while (WoTId.hasNext()) {
 			String identityID = WoTId.next();
-			FreenetURI insertURI;
-			try {
-				insertURI = new FreenetURI(identityList.get(identityID));
-				insertURI = insertURI.setDocName("index").setSuggestedEdition(0);
-				sfs.putOverwrite(HASH_PUBKEY, identityID);
-				sfs.putOverwrite(INSERT_URI, insertURI.toASCIIString());
-				libraryTalker.sendSyncInternalOnly(sfs, null);
-			} catch (MalformedURLException e) {
+			synchronized (cCur) { 
+				List<String> lis;
+				try {
+					lis = WoTOwnIdentities.getWoTIdentitiesCuratedCategories().get(identityID);
+					for (final String categoryID : lis) {
+						insertURI = new FreenetURI(identityList.get(identityID));
+						insertURI = insertURI.setDocName(categoryID).setSuggestedEdition(0);
+						sfs.putOverwrite(HASH_PUBKEY, identityID);
+						sfs.putOverwrite(INSERT_URI, insertURI.toASCIIString());
+						libraryTalker.sendSyncInternalOnly(sfs, null);
+					}			
+				} catch (PluginNotFoundException e) {
+					Logger.error(this, "WoT plugin not found", e);
+				} catch (MalformedURLException e) {
 				Logger.error(this,"MalformedURL insertURI" + identityID, e);
+				}	
 			}
-		}	
+		}
+		
 	}
 	
 	

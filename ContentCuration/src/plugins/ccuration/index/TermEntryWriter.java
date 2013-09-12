@@ -68,6 +68,38 @@ public class TermEntryWriter {
 				}
 			}
 			return;
+		case FILE:
+			TermFileEntry fen = (TermFileEntry)en;
+			System.out.println("enn.page "+ fen.file);
+			fen.file.writeFullBinaryKeyWithLength(dos);
+			dos.writeUTF(fen.mimeType);
+			System.out.println("enn.page "+ fen.mimeType);
+			int fsize = fen.hasPositions() ? fen.positionsSize() : 0;
+			if (fen.description == null) {
+				dos.writeInt(fsize);
+			} else {
+				dos.writeInt(~fsize); // invert bits to signify title is set
+				dos.writeUTF(fen.description);
+			}
+			if (fsize != 0) {
+				if(fen.hasFragments()) {
+					for(Map.Entry<Integer, String> p : fen.positionsMap().entrySet()) {
+						dos.writeInt(p.getKey());
+						if(p.getValue() == null) {
+							dos.writeUTF("");
+						}
+						else {
+							dos.writeUTF(p.getValue());
+						}
+					}
+				} else {
+					for(int x : fen.positionsRaw()) {
+						dos.writeInt(x);
+						dos.writeUTF("");
+					}
+				}
+			}
+			return;
 		}
 	}
 
