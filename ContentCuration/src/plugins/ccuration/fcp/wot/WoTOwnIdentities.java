@@ -58,6 +58,18 @@ public class WoTOwnIdentities {
 		return contexts.contains(CCURATION_CONTEXT);
 	}
 	
+	/**
+	 * Check if the index is registered in WoT identity. 
+	 * @param author The public key hash for an identity is referred to in the source code as the identity's ID, yet the field name for it is the identity's "Identity".
+	 * @return
+	 * @throws PluginNotFoundException 
+	 */
+	public static Boolean indexIsRegistered(String author, String indexName) throws PluginNotFoundException {
+		List<String> contexts = getWoTIdentitiesCuratedCategories().get(author);
+		return contexts.contains(indexName);
+	}
+	
+	
 	//TODO leuchtkaefer I need to update index with current version. Verify that the propertyValue 
 	/**
 	 * Sets the identity's property. It is use every time a new index is published by the identity. 
@@ -223,7 +235,7 @@ public class WoTOwnIdentities {
 						Vector<Integer> counter = new Vector<Integer>(); 
 						Vector<String> contexts = new Vector<String>();	
 						int ix, prev;
-;						for (final String s : params.toOrderedString().split("\n")) {
+						for (final String s : params.toOrderedString().split("\n")) {
 							if (s.startsWith("Identity")) {
 								identifiers.add(s.split("=")[1]);
 								counter.add(0);
