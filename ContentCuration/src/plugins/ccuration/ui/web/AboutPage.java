@@ -35,7 +35,6 @@ public class AboutPage extends WebPageImpl {
 	 */
 	private void makeSummary() {
 		HTMLNode section1 = addContentBox(l10n().getString("AboutPage.SummaryBox.HeaderSection1"));
-		
 		HTMLNode list1 = new HTMLNode("ul");
 		list1.addChild(new HTMLNode("li", l10n().getString("AboutPage.SummaryBox.Section1FirstRecord")));
 		list1.addChild(new HTMLNode("li", l10n().getString("AboutPage.SummaryBox.Section1SecondRecord")));
@@ -45,12 +44,26 @@ public class AboutPage extends WebPageImpl {
 		HTMLNode list2 = new HTMLNode("ul");
 		list2.addChild(new HTMLNode("li", l10n().getString("AboutPage.SummaryBox.Section2FirstRecord")));
 		list2.addChild(new HTMLNode("li", l10n().getString("AboutPage.SummaryBox.Section2SecondRecord")));
-		list2.addChild("br");
-		list2.addChild(new HTMLNode("li", l10n().getString("AboutPage.SummaryBox.Section2ThirdRecord")));
-		section2.addChild(list2).addChild("br");
-		final HTMLNode links = section2.addChild("p");
-		links.addChild("a", "href", "javascript:(function(){newURI='http://localhost:8888/ContentCuration/CurateWebPage?addNewURI='+encodeURIComponent(window.location.href)+'&addDocTitle='+encodeURIComponent(document.title);window.location=newURI})();", "FreeCurateIt");
-	
+		section2.addChild(list2);
+		
+		HTMLNode section3 = addContentBox(l10n().getString("AboutPage.SummaryBox.HeaderSection3"));
+		HTMLNode list3 = new HTMLNode("ul");
+		list3.addChild(new HTMLNode("li", l10n().getString("AboutPage.SummaryBox.Section3FirstRecord")));
+		list3.addChild(new HTMLNode("li", l10n().getString("AboutPage.SummaryBox.Section3SecondRecord")));
+		list3.addChild(new HTMLNode("li", l10n().getString("AboutPage.SummaryBox.Section3ThirdRecord")));
+		section3.addChild(list3);
+		
+		HTMLNode section4 = addContentBox(l10n().getString("AboutPage.SummaryBox.HeaderSection4"));
+		HTMLNode list4 = new HTMLNode("ul");
+		list4.addChild(new HTMLNode("li", l10n().getString("AboutPage.SummaryBox.Section4FirstRecord")));
+		list4.addChild(new HTMLNode("li", l10n().getString("AboutPage.SummaryBox.Section4SecondRecord")));
+		section4.addChild(list4);
+		
+		HTMLNode section5 = addContentBox(l10n().getString("AboutPage.SummaryBox.HeaderSection5"));
+		HTMLNode list5 = new HTMLNode("ul");
+		list5.addChild(new HTMLNode("li", l10n().getString("AboutPage.SummaryBox.Section5FirstRecord")));
+		list5.addChild(new HTMLNode("li", l10n().getString("AboutPage.SummaryBox.Section5SecondRecord")));
+		section5.addChild(list5);
 	}
 	
 }
