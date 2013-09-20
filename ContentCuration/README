@@ -1,0 +1,56 @@
+***Curator Plugin***
+
+This plugin helps you to organize Freenet data and share your collections (indexes) with others. 
+Curator uses Web of Trust (WoT) identities. You can create multiple indexes for each anonymous identity that you own. 
+An index is a collection of entries related to a category. For instance, you can create the categories linux and windows and mantain a collection of data related to such categories.
+An entry can refer to a document or a web page in Freenet.  
+
+***Using Curator***
+
+The first requirement is to own at least one WoT identity. Obviously, WoT plugin is needed.
+Inserting content in an index is done through any of the two available forms:
+http://localhost:8888/ContentCuration/CurateWebPage
+http://localhost:8888/ContentCuration/CurateFilePage
+
+***How do I become a curator?****
+ 
+Curate content on Freenet is way of helping others to find useful data. You can be of great help to the community when you create valuable collections. 
+Keep in mind that is better to mantain a handful of collections of topics that you know well than create intractable list of collections. 
+Try to become a specialist on the categories you are curating. Add tags and clear descriptions for each entry you added to the collection. 
+
+***How do users know that I became a curator?****
+After you publish an index with a WoT identity for the first time, "Curator" becomes a registered service for that identity.
+Services for each identity are shown in the identity page. Check out Community menu, Known Anonymous Identities.
+
+***Where are the indexes located?****
+Indexes are published to Freenet using the publisher's key. 
+The FreenetURI to download an index is a USK identical to the publisher's Request URI except for the document name and the edition number.
+A publisher's Request URI ends in ".../WebOfTrust/EditionNumber", just replace it with the index's name and the appropriate edition number. 
+Example ".../myCategory/5"
+
+***How do I search content?****
+
+To find content the search function will find keyphrases inside document's title, tags, etc.
+At the moment we are working on a distributed search of the indexes. 
+While the distributed search is not available, you can use the Freenet Library' search function: http://localhost:8888/library/
+
+First you need to add the index
+Name: << Choose a name you like or use the index's name
+URI: <<< Put the index's FreenetURI (see Where are the indexes located)
+Press "Add Bookmark" button
+
+To selected the recently added index, just check the box and do your search. You can also search in multiple indexes.
+
+The following are instructions to search data in Library' search:
+Enter a search query into the search box, this can use the standard search engine
+query syntax ( or, not/-, "") or any combination
+
+eg
+	freenet -"freenet message system"
+	freenet or "free network"
+
+Stop words( Anything less than 3 letters and popular words such as 'and' 'the'
+'but' ) are excluded from searches, in some situations such as an intersection
+search ('bill of rights') or phrase search('"jesus of nazareth"') the stopword
+is treated as a blank as the result can still be useful, searching for
+the phrase ('"the who"') will fail though as ignoring 'the' makes the search almost meaningless.
