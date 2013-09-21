@@ -1,3 +1,18 @@
+/* Curator, Freenet plugin to curate content
+ * Copyright (C) 2013 leuchtkaefer
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 package plugins.ccuration;
 
 import plugins.ccuration.ui.web.WebInterface;
@@ -15,16 +30,21 @@ import freenet.pluginmanager.PluginRespirator;
 import freenet.support.Logger;
 
 /**
- * A simple plugin based on Freenet.
+ * This plugin helps you to organize Freenet data and share your collections (indexes) with others. 
+ * Curator uses Web of Trust (WoT) identities and Library to create indexes. 
+ * You can create multiple indexes for each anonymous identity that you own. An index is a collection 
+ * of entries related to a category. For instance, you can create the categories linux and windows 
+ * and maintain a collection of data related to such categories.
+ * An entry can refer to a document or a web page in Freenet.
  * 
  * @author leuchtkaefer
  */
-//public class ContentCuration implements FredPlugin, FredPluginFCP, FredPluginThreadless, FredPluginL10n, FredPluginBaseL10n {
+
 public class ContentCuration implements FredPlugin, FredPluginThreadless, FredPluginL10n, FredPluginBaseL10n, FredPluginVersioned, FredPluginRealVersioned {
 	private static String PLUGIN_NAME;
-	
+
 	/* References from the node */
-	
+
 	/** The node's interface to connect the plugin with the node, needed for retrieval of all other interfaces */
 	private static PluginRespirator pr;
 	private static PluginL10n l10n;
@@ -32,14 +52,13 @@ public class ContentCuration implements FredPlugin, FredPluginThreadless, FredPl
 	public static final String l10nFilesBasePath = "plugins/ccuration/l10n/";
 	public static final String l10nFilesMask = "lang_${lang}.l10n";
 	public static final String l10nOverrideFilesMask = "ccuration_lang_${lang}.override.l10n";
-	
+
 	/* User interfaces */
 
 	private WebInterface mWebInterface;
-	//private FCPInterface mFCPInterface;
 
 	private LibraryTalker librarytalker;
-	
+
 	/*
 	 * Boolean that is used for preventing the construction of log-strings if
 	 * logging is disabled (for saving some cpu cycles)
@@ -61,11 +80,11 @@ public class ContentCuration implements FredPlugin, FredPluginThreadless, FredPl
 		super();
 		if(logDEBUG) Logger.debug(this, "ContentCuration plugin constructed.");
 	}
-	
+
 	public void terminate() {
 		if (logDEBUG)
 			Logger.debug(this, "ContentCuration terminating ...");
-		// goon = false;
+
 		try {
 			if (mWebInterface != null)
 				this.mWebInterface.unload();
@@ -78,31 +97,22 @@ public class ContentCuration implements FredPlugin, FredPluginThreadless, FredPl
 	}
 
 	public void runPlugin(PluginRespirator pr) {
-	//	try {
-			Logger.normal(this, "ContentCuration starting up...");
-			ContentCuration.pr = pr;
-			//System.err.println("Heartbeat from ContentCuration: " + (new Date()));
-			ContentCuration.PLUGIN_NAME = ContentCuration.getBaseL10n().getString("ContentCuration");
-			
-			mWebInterface = new WebInterface(this, SELF_URI);
+		Logger.normal(this, "ContentCuration starting up...");
+		ContentCuration.pr = pr;
+		ContentCuration.PLUGIN_NAME = ContentCuration.getBaseL10n().getString("ContentCuration");
 
-			try {
-				//Buffer for indexes
-				librarytalker = new LibraryTalker(pr, this); 
-				librarytalker.start();
-			} catch (PluginNotFoundException e) {
-				Logger.error(this, "Couldn't connect to Library. Please check if Library plugin is loaded", e);
-				terminate();
-			} 
-			
-			Logger.normal(this, "ContentCuration starting up completed.");
-	//	} catch (RuntimeException e) {
-	//		Logger.error(this, "ContentCuration, error during startup", e);
-			/* We call it so the database is properly closed */
-	//		terminate();
+		mWebInterface = new WebInterface(this, SELF_URI);
 
-	//		throw e;
-	//	}
+		try {
+			//Buffer for indexes
+			librarytalker = new LibraryTalker(pr, this); 
+			librarytalker.start();
+		} catch (PluginNotFoundException e) {
+			Logger.error(this, "Couldn't connect to Library. Please check if Library plugin is loaded", e);
+			terminate();
+		} 
+
+		Logger.normal(this, "ContentCuration starting up completed.");
 
 	}
 
@@ -119,7 +129,7 @@ public class ContentCuration implements FredPlugin, FredPluginThreadless, FredPl
 		Logger.debug(this, "Set LANGUAGE to: " + newLanguage.isoCode);
 	}
 
-	
+
 	/**
 	 * This is where our L10n files are stored.
 	 * @return Path of our L10n files.
@@ -129,7 +139,7 @@ public class ContentCuration implements FredPlugin, FredPluginThreadless, FredPl
 		return ContentCuration.l10nFilesBasePath;
 	}
 
-	
+
 	@Override
 	public String getL10nFilesMask() {
 		return ContentCuration.l10nFilesMask;
@@ -153,8 +163,8 @@ public class ContentCuration implements FredPlugin, FredPluginThreadless, FredPl
 	public static String getName() {
 		return ContentCuration.PLUGIN_NAME;
 	}
-	
-	
+
+
 	/**
 	 * Access to the current L10n data.
 	 * 
@@ -165,7 +175,7 @@ public class ContentCuration implements FredPlugin, FredPluginThreadless, FredPl
 	}
 
 	public static PluginRespirator getPluginRespirator() {
-		return ContentCuration.pr; //leuchtkaefer see static reference
+		return ContentCuration.pr; 
 	}
 
 	public LibraryTalker getLibraryTalker() {
@@ -190,16 +200,4 @@ public class ContentCuration implements FredPlugin, FredPluginThreadless, FredPl
 		return Version.getVersion();
 	}
 
-
-	/**
-	 * Event handler from FredPluginFCP, handled in <code>class FCPInterface</code>.
-	 */
-	/*
-	@Override //TODO remove this method. i don't need FredPluginFCP
-	public void handle(PluginReplySender replysender, SimpleFieldSet params,
-			Bucket data, int accesstype) {	
-		//TODO implement 
-	//	mFCPInterface.handle(replysender, params, data, accesstype);
-	}
-*/
 }
