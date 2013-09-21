@@ -23,7 +23,6 @@ public class FileCurateForm extends CurateForm{
 	public FileCurateForm(WebInterfaceToadlet toadlet,
 			HTTPRequest myRequest, ToadletContext context, BaseL10n _baseL10n) {
 		super(toadlet, myRequest, context, _baseL10n);
-
 	}
 	
 	public void make() {
@@ -31,26 +30,19 @@ public class FileCurateForm extends CurateForm{
 		String activeIdentity = null;
 		String newIndex = null;
 		int nbOwnIdentities = 0;
-		String selectedIdentity = request.getPartAsStringFailsafe(
-				"OwnerID", 128);
-		String buttonChosenIdentityValue = request.getPartAsStringFailsafe(
-				"buttonChooseIdentity", 128);
-		String buttonNewContentValue = request.getPartAsStringFailsafe(
-				"buttonNewContent", 128);
-		String buttonNewCategoryValue = request.getPartAsStringFailsafe(
-				"newCategory", 155);
-		String addedCategoryRequest = request.getPartAsStringFailsafe(
-				"addedCategory", 155);
-		String currentPreviousIdentity = request.getPartAsStringFailsafe(
-				"currentID", 128);
+		String selectedIdentity = request.getPartAsStringFailsafe("OwnerID", 128);
+		String buttonChosenIdentityValue = request.getPartAsStringFailsafe("buttonChooseIdentity", 128);
+		String buttonNewContentValue = request.getPartAsStringFailsafe("buttonNewContent", 128);
+		String buttonNewCategoryValue = request.getPartAsStringFailsafe("newCategory", 155);
+		String addedCategoryRequest = request.getPartAsStringFailsafe("addedCategory", 155);
+		String currentPreviousIdentity = request.getPartAsStringFailsafe("currentID", 128);
 		
 		InputEntry entry; 
-						
+		
 		synchronized (cCur) {
 			Set<String> allOwnIdentities;
 			try {
-				allOwnIdentities = WoTOwnIdentities.getWoTIdentities()
-						.keySet();
+				allOwnIdentities = WoTOwnIdentities.getWoTIdentities().keySet();
 				nbOwnIdentities = allOwnIdentities.size();
 			} catch (PluginNotFoundException e) {
 				Logger.error(this, "WoT plugin not found", e);
@@ -58,7 +50,7 @@ public class FileCurateForm extends CurateForm{
 			}
 		}
 		
-		if (!buttonNewContentValue.equals("")) { // TODO leuchtkaefer check
+		if (!buttonNewContentValue.equals("")) {
 			content = buttonNewContentValue;
 		}
 		
@@ -96,7 +88,7 @@ public class FileCurateForm extends CurateForm{
 		// Actions done when addingNewContent button is pressed
 		if (content != null) {
 			String category = request.getPartAsStringFailsafe("term", 128);
-			String docURI = request.getPartAsStringFailsafe("newContentURI", 128);
+			String docURI = request.getPartAsStringFailsafe("newContentURI", 155);
 			String activeID = request.getPartAsStringFailsafe("currentID", 128);
 			String d = request.getPartAsStringFailsafe("description", 180);
 			String m = request.getPartAsStringFailsafe("mime", 65); 
@@ -108,25 +100,29 @@ public class FileCurateForm extends CurateForm{
 			
 			if (Utils.validString(category) && Utils.validString(docURI)) {
 				try {
-					FreenetURI privURI = new FreenetURI(WoTOwnIdentities
-							.getInsertURI(activeID));
-					FreenetURI pubURI = new FreenetURI(WoTOwnIdentities
-							.getRequestURI(activeID));
-					pubURI = pubURI.setDocName(category).setSuggestedEdition(0);
-					privURI = privURI.setDocName(category).setSuggestedEdition(0);
-					
-					//TODO leuchtkaefer check that all needed inputs are not empty pageTitle, category. Tags are optional					
-					entry = new InputEntry.Builder(privURI, pubURI, new FreenetURI(docURI), TermEntry.EntryType.FILE,tags).description(d).mime(m).build();
-					System.out.println("tpe values inside entry " + entry.getTpe().size());				
+					synchronized (cCur) {
+						FreenetURI privURI = new FreenetURI(WoTOwnIdentities.getInsertURI(activeID));
+						FreenetURI pubURI = new FreenetURI(WoTOwnIdentities.getRequestURI(activeID));
+						pubURI = pubURI.setDocName(category).setSuggestedEdition(0);
+						privURI = privURI.setDocName(category).setSuggestedEdition(0);
+						entry = new InputEntry.Builder(privURI, pubURI, new FreenetURI(docURI), TermEntry.EntryType.FILE,tags).setDescription(d).setMimeType(m).build();
+						//make public this identity uses Curator
+						if (!WoTOwnIdentities.identityIsARegisteredPublisher(activeID)) {
+								WoTOwnIdentities.registerIdentity(activeID);				
+						}
+					}
 				} catch (MalformedURLException e1) {
 					Logger.error(this, "Error while forming the URI", e1);
-					System.out.println("Leuchtkaefer MalformedURLException "
-							+ e1);
+					makeNoURLWarning();
+					return;
+				} catch (PluginNotFoundException e) {
+					Logger.error(this, "WoT plugin not found", e);
 					return;
 				}
 				//send user's input to Library
 				LibraryTalker ltalker = cCur.getLibraryTalker();
 				ltalker.sendInput(entry);
+				
 			}else {
 				HTMLNode listBoxContent2 = addContentBox("Please include some data to publish in your index.");
 			}
@@ -137,7 +133,7 @@ protected HTMLNode makeDataForm(String uriContent, String title, HTMLNode inputF
 		
 		HTMLNode uriBox = inputForm.addChild("p").addChild("label", "for", "URI",l10n().getString("CurateThisContentPage.URILabel")).addChild("br")
 			.addChild("input", new String[] { "type", "name", "size" },
-				new String[] { "text", "newContentURI", "128" });
+				new String[] { "text", "newContentURI", "155" });
 		
 		if (uriContent.length()>0) {
 			FreenetURI fURI = new FreenetURI(uriContent);
