@@ -6,7 +6,9 @@ package plugins.ccuration.ui.web;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import plugins.ccuration.LibraryTalker;
@@ -27,8 +29,11 @@ import freenet.support.api.HTTPRequest;
  * 
  * @author leuchtkaefer
  */
+
+
 abstract class CurateForm extends WebPageImpl{
-	
+
+	public static String INDEX_FILENAME_EXTENSION = ".yml";
 	/**
 	 * Creates a webpage.
 	 * 
@@ -58,9 +63,9 @@ abstract class CurateForm extends WebPageImpl{
 				"SelectIdentityForm"); 
 		HTMLNode selectBox = new HTMLNode("select", "name", "OwnerID");		
 		synchronized (cCur) {
-			for (final String identityID : this.getWotIdentities().keySet()){
-				HTMLNode selectBoxElement = selectBox.addChild("option", "value", identityID, this
-						.getWotIdentities().get(identityID));
+			Map<String, String> m = this.getWotIdentities();
+			for (final String identityID : m.keySet()){ 
+				HTMLNode selectBoxElement = selectBox.addChild("option", "value", identityID, m.get(identityID));
 				if (defaultSelectedValue != null && defaultSelectedValue.equals(identityID.toString())) {
 					selectBoxElement.addAttribute("selected", "selected");
 				}
@@ -77,7 +82,7 @@ abstract class CurateForm extends WebPageImpl{
 		inputForm.addChild("p").
 		addChild("input", new String[] { "type", "name", "value" },
 				new String[] { "submit", "buttonChooseIdentity",
-						"Use this identity" });
+				l10n().getString("CurateForm.InputForm.Button.SelectIdentity")});
 	}
 	
 	/**
@@ -94,7 +99,8 @@ abstract class CurateForm extends WebPageImpl{
 			inputForm.addChild("p").
 					addChild("input", new String[] { "type", "name", "value" },
 							new String[] { "submit", "buttonNewContent",
-									"addingNewContent" });
+							l10n().getString(
+									"CurateForm.InputForm.Button.AddNewContent") });
 		}
 	}
 
@@ -129,19 +135,26 @@ abstract class CurateForm extends WebPageImpl{
 		
 		synchronized (cCur) {
 			inputForm.addChild("br"); 
-			List<String> lis;
+			List<String> lis,los;
 			try {
-				//this.getWotIndexCategories().get(selectedIdentity);
 				lis = WoTOwnIdentities.getWoTIdentitiesCuratedCategories().get(selectedIdentity);
+				//los = WoTOwnIdentities.getCuratedCategories(selectedIdentity); //TODO test and replace lis
+				Collections.sort(lis); //No idea how it works with arabic or chinese characters
 			} catch (PluginNotFoundException e) {
 				Logger.error(this, "WoT plugin not found", e);
 				return null;
 			}			
 			for (final String categoryID : lis) {
+				HTMLNode childCategory = new HTMLNode("option", "value", categoryID, categoryID);
+				if ((newAddedCategory != null) && newAddedCategory.equals(categoryID.toString())) {
+					childCategory.addAttribute("selected", "selected");
+				}
+				selectCategory.addChild(childCategory);
+				/*
 				selectCategory.addChild("option", "value", categoryID, categoryID); 
 				if ((newAddedCategory != null) && newAddedCategory.equals(categoryID.toString())) {
 					selectCategory.addAttribute("selected", "selected");
-				}
+				}*/
 			}		
 			if (newAddedCategory == null) {
 				selectCategory.getChildren().get(0).addAttribute("selected", "selected"); //default value
