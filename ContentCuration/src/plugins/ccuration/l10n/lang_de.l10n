@@ -1,0 +1,58 @@
+
+ContentCuration=Kurator
+
+MissingWoT = Plugin Web of Trust nicht gefunden
+MissingWoTLong = Inhalt Kuration benötigt das Web of Trust (WoT) plugin
+MissingWoTIdentity = Keine WoT Identität
+MissingWoTIdentityLong = Inhalt Kuration benötigt mindestens eine WoT Identität
+
+
+AboutPage.SummaryBox.HeaderSection1 = Über
+AboutPage.SummaryBox.Section1FirstRecord = Inhalt Kuration ist der Prozess zur Erfassung und Klassifizierung der interessantesten Dinge über ein Thema, um es mit anderen zu teilen und nutzen und an ein einzigen Ort zu halten.
+AboutPage.SummaryBox.Section1SecondRecord = WoT Identität wird verwendet um kuriertes Material zu signieren; somit erhällt jede Identität ein eindeutigen Index.
+AboutPage.SummaryBox.HeaderSection2 = Verwendet Kurator
+AboutPage.SummaryBox.Section2FirstRecord = Die erste Anforderung ist mindestens eine WoT Identität zu besitzen. Plugin WoT wird benötigt. 
+AboutPage.SummaryBox.Section2SecondRecord = Einfügen von Inhalten in einem Index wird durch eine der beiden verfügbaren Optionen im Plugin-Menü aufgerufen.
+AboutPage.SummaryBox.HeaderSection3 = Wie kann ich zu einen Kurator werden.?
+AboutPage.SummaryBox.Section3FirstRecord = Inhalt kurieren ist der Weg in Freenet um anderen zu helfen, nützliche Daten zu finden. Sie können eine große Hilfe für die Gemeinde sein, wenn Sie wertvolle Sammlungen erstellen.
+AboutPage.SummaryBox.Section3SecondRecord = Denken Sie daran, es ist besser nur eine handvoll Sammlungen von Themen die Sie gut kennen zu pflegen.
+AboutPage.SummaryBox.Section3ThirdRecord = Versuchen Sie ein Spezialist auf den Kategorien zu werden, die Sie kurieren. Tags hinzufügen und klare Beschreibungen für jeden Eintrag, den Sie in die Sammlung aufnehmen.
+AboutPage.SummaryBox.HeaderSection4 = Wie wissen die Anwender, dass ich ein Kurator bin?
+AboutPage.SummaryBox.Section4FirstRecord = Nachdem Sie einen Index mit einem WoT Identität zum ersten Mal veröffentlicht haben wird "Kurator" eine registrierter Dienst für diese Identität.
+AboutPage.SummaryBox.Section4SecondRecord = Dienste werden für jede Identität in der Identität Seite angezeigt. Im Menü Community "Known Anonymous Identities" öffnen.
+AboutPage.SummaryBox.HeaderSection5 = Wo findet man die Indizes?
+AboutPage.SummaryBox.Section5FirstRecord = Indizes werden mit der publisher Request URI zu Freenet veröffentlicht. 
+AboutPage.SummaryBox.Section5SecondRecord = Der Indexname ist der Request URI's Dokumentname.
+
+#Warning messages
+CurateThisContentPage.NoOwnIdentityWarning.Header = Keine eigene Identität gefunden.
+CurateThisContentPage.NoOwnIdentityWarning.Text = Sie müssen zuerst eine Identität mit den WoT Plugin erzeugen.
+CurateThisContentPage.NoURLWarning.Header = Der gelieferte FreenetURI kann nicht in ein gültiges FreenetURI Format konvertiert werden.
+CurateThisContentPage.NoURLWarning.Text = Bitte fügen sie eine gültige FreenetURI ein. Die Addresse einer SSK sieht aus wie http://127.0.0.1:8888/SSK@CxRxWs...BAAE/mysite-4. Denken Sie daran, dass Sie nur Inhalte kurieren können, die in Freenet sind und über eine gültige FreenetURI verfügen. Benutzen Sie das Menü für ein leeres Formular.
+CurateThisContent.SelectOwnIdentity.Failed = Fehler bei der Auswahl der Identität.
+
+#Forms labels
+CurateThisContentPage.SelectWoTIdentity.Header = Auswahl WoT Identität
+CurateThisContentPage.DataInputForm.Header = Diesen Posten in Freenet kurieren.
+CurateThisContentPage.AuthorLabel = Die WoT Identität die diesen Inhalt kuriert hat.
+CurateThisContentPage.TermLabel = Inhalt unter diese Kategorie kurieren.
+CurateThisContentPage.URILabel = FreenetURI
+CurateThisContentPage.TitleLabel = Inhaltstitel (Max. 65 Zeichen)
+CurateThisContentPage.TagsLabel = Helfen sie andere die Inhalte zu finden indem Sie Suchbegriffe hinzufügen (max. 3).
+CurateDoc.DescriptionLabel = Dateibeschreibung (Max. 180 Zeichen)
+CurateDoc.MIMELabel = Behandeln Sie die Datei als MIME-Typ (lassen Sie dieses Feld leer damit Freenet selbstständig den MIME-Typ erkennt)
+CurateForm.InputForm.Button.AddNewContent = Neuen Inhalt senden.
+CurateForm.InputForm.Button.SelectIdentity = Ausgewälte Identität verwenden 
+
+#Plugin menu
+WebInterface.CuratorMenuItem.Home = Über
+WebInterface.CuratorMenuItem.Home.Tooltip = Allgemeine Information über das Plugin
+WebInterface.CuratorMenuItem.CurateWebPage = Webinhalt kurieren
+WebInterface.CuratorMenuItem.CurateWebPage.Tooltip = Freenets Web-Seite im Kurator's Index hinzufügen.
+WebInterface.CuratorMenuItem.CurateFilePage = Inhalt der Datei kurieren
+WebInterface.CuratorMenuItem.CurateFilePage.Tooltip = Freenets Dokument im Kurator's Index hinzufügen.
+
+
+
+WebInterface.Curator = ContentCuration
+WebInterface.Curator.Tooltip = CCur Plugin, ihr Platz um Inhalt im Freenet zu teilen und kurieren.

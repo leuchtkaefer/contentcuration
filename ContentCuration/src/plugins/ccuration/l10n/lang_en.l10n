@@ -10,14 +10,23 @@ MissingWoTIdentityLong = Content Curation requires at least one WoT identity
 AboutPage.SummaryBox.HeaderSection1 = About
 AboutPage.SummaryBox.Section1FirstRecord = Content curation is the process of collecting and classifying the most interesting things about a subject to share it for the common benefit at a single location.
 AboutPage.SummaryBox.Section1SecondRecord = WoT Identities are used to sign the curated material; thus each identity owns and maintains a unique index.
-AboutPage.SummaryBox.HeaderSection2 = Add a bookmarklet button in the navigation bar of your browser
-AboutPage.SummaryBox.Section2FirstRecord = A bookmarklet is a bookmark that contains javascript code to extend the functionality of your favorite browser. 
-AboutPage.SummaryBox.Section2SecondRecord = You can curate content easily by pressing a bookmarklet button while you visit a page or download Freenet content.
-AboutPage.SummaryBox.Section2ThirdRecord = Just drag and drop the link "FreeCurateIt" to the navigation bar and start curating items in Freenet.
+AboutPage.SummaryBox.HeaderSection2 = Using Curator
+AboutPage.SummaryBox.Section2FirstRecord = The first requirement is to own at least one WoT identity. Obviously, WoT plugin is needed. 
+AboutPage.SummaryBox.Section2SecondRecord = Inserting content in an index is done through any of the two available forms in the plugin's menu.
+AboutPage.SummaryBox.HeaderSection3 = How do I become a curator?
+AboutPage.SummaryBox.Section3FirstRecord = Curate content on Freenet is way of helping others to find useful data. You can be of great help to the community when you create valuable collections. 
+AboutPage.SummaryBox.Section3SecondRecord = Keep in mind that is better to mantain a handful of collections of topics that you know well than create intractable list of collections. 
+AboutPage.SummaryBox.Section3ThirdRecord = Try to become a specialist on the categories you are curating. Add tags and clear descriptions for each entry you added to the collection. 
+AboutPage.SummaryBox.HeaderSection4 = How do users know that I became a curator?
+AboutPage.SummaryBox.Section4FirstRecord = After you publish an index with a WoT identity for the first time, "Curator" becomes a registered service for that identity.
+AboutPage.SummaryBox.Section4SecondRecord = Services for each identity are shown in the identity page. Check out Community menu, Known Anonymous Identities.
+AboutPage.SummaryBox.HeaderSection5 = Where are the indexes located?
+AboutPage.SummaryBox.Section5FirstRecord = Indexes are published to Freenet using the publisher's Request URI. 
+AboutPage.SummaryBox.Section5SecondRecord = The index's name is the Request URI's document name.
 
 #Warning messages
 CurateThisContentPage.NoOwnIdentityWarning.Header = No own identity found
-CurateThisContentPage.NoOwnIdentityWarning.Text = You should create an identity first using the WoT plugin.
+CurateThisContentPage.NoOwnIdentityWarning.Text = First, you should create an identity using the WoT plugin.
 CurateThisContentPage.NoURLWarning.Header = The FreenetURI provided can not converted to a valid FreenetURI format.
 CurateThisContentPage.NoURLWarning.Text = Please insert a valid FreenetURI. The address of an SSK looks like http://127.0.0.1:8888/SSK@CxRxWs...BAAE/mysite-4. Keep in mind that you can only curate content that is in Freenet and has a valid FreenetURI. Use the menu for a blank form.
 CurateThisContent.SelectOwnIdentity.Failed = Error while selecting the OwnIdentity
@@ -32,7 +41,8 @@ CurateThisContentPage.TitleLabel = Title of the content (Max. 65 char)
 CurateThisContentPage.TagsLabel = Help people to find the content by adding keyphrases (max. 3).
 CurateDoc.DescriptionLabel = Description of the file (Max. 180 char)
 CurateDoc.MIMELabel = Treat the file as this MIME type (leave this blank to let Freenet auto-detect the MIME type)
-
+CurateForm.InputForm.Button.AddNewContent = Submit new content
+CurateForm.InputForm.Button.SelectIdentity = Use selected identity 
 
 #Plugin menu
 WebInterface.CuratorMenuItem.Home = About
