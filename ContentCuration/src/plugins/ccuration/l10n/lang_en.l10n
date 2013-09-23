@@ -39,6 +39,7 @@ CurateThisContentPage.TermLabel = Curate content under this category
 CurateThisContentPage.URILabel = FreenetURI
 CurateThisContentPage.TitleLabel = Title of the content (Max. 65 char)
 CurateThisContentPage.TagsLabel = Help people to find the content by adding keyphrases (max. 3).
+CurateThisContentPage.buttonAddCat = Add a new category
 CurateDoc.DescriptionLabel = Description of the file (Max. 180 char)
 CurateDoc.MIMELabel = Treat the file as this MIME type (leave this blank to let Freenet auto-detect the MIME type)
 CurateForm.InputForm.Button.AddNewContent = Submit new content

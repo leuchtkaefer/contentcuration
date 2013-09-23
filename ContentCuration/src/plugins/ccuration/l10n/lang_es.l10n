@@ -1,0 +1,59 @@
+
+ContentCuration=Curator
+
+MissingWoT = Plugin Web of Trust no est‡ presente.
+MissingWoTLong = Curator necesita el plugin Web of Trust (WoT)
+MissingWoTIdentity = No se encuentran identidades (WoT). 
+MissingWoTIdentityLong = Curator necesita al menos una identidad (WoT).
+
+
+AboutPage.SummaryBox.HeaderSection1 = Acerca
+AboutPage.SummaryBox.Section1FirstRecord = Curar contenido es el proceso de recolectar y clasificar los datos mas interesantes acerca de un tema. La colecci—n es compartida para beneficio de la comunidad.
+AboutPage.SummaryBox.Section1SecondRecord = Las identidades firman el material curado. De esta manera, cada identidad mantiene uno o varios indices que funcionan como cat‡logos de un tema.
+AboutPage.SummaryBox.HeaderSection2 = Uso del plugin Curator
+AboutPage.SummaryBox.Section2FirstRecord = El primer requerimiento es poseer al menos una identidad WoT. El plugin WoT debe estar cargado. 
+AboutPage.SummaryBox.Section2SecondRecord = El plugin tiene dos formularios que sirven para insertar distinto tipo de contenido en el ’ndice. El acceso a ambos formularios se hace por medio del menu del plugin.
+AboutPage.SummaryBox.HeaderSection3 = ÀC—mo puedo convertirme en un curador de contenidos?
+AboutPage.SummaryBox.Section3FirstRecord = Curar contenido publicado en Freenet es una manera de ayudar a otros a encontrar datos relevantes. Crear colecciones con contenido de calidad son una gran ayuda para la comunidad de Freenet. 
+AboutPage.SummaryBox.Section3SecondRecord = Ten en cuenta que es mejor mantener una cantidad acotada de colecciones sobre temas que conoces bien que crear una desmesurada cantidad de ’ndices. 
+AboutPage.SummaryBox.Section3ThirdRecord = Trata de convertirte un especialista en las categorias que estas curando. Agrega tags y descripciones claras por cada entrada que incluyes en la colecci—n. 
+AboutPage.SummaryBox.HeaderSection4 = ÀC—mo saben los dem‡s usuarios que soy un curador?
+AboutPage.SummaryBox.Section4FirstRecord = Curator se registra como un "servicio" de la identidad que publica un ’ndice por primera vez.
+AboutPage.SummaryBox.Section4SecondRecord = Los servicios que brinda una cierta identidad est‡n listados en la pagina de la identidad. Para consultarlos, ve al menu Community, Known Anonymous Identities.
+AboutPage.SummaryBox.HeaderSection5 = ÀD—nde se encuentran los ’ndices?
+AboutPage.SummaryBox.Section5FirstRecord = Los ’ndices se publican en Freenet usando la Request URI de la identidad publicante. 
+AboutPage.SummaryBox.Section5SecondRecord = El nombre del ’ndice pasa a ser el nombre de archivo de la Request URI.
+
+#Warning messages
+CurateThisContentPage.NoOwnIdentityWarning.Header = No se encontr— ninguna identidad propia.
+CurateThisContentPage.NoOwnIdentityWarning.Text = Primero es necesario crear una identidad con el plugin Web of Trust.
+CurateThisContentPage.NoURLWarning.Header = El dato provisto no tiene un formato FreenetURI v‡lido.
+CurateThisContentPage.NoURLWarning.Text = Por favor, inserte una direcci—n FreenetURI v‡lida. La direcci—n SSK tiene un formato parecido a: http://127.0.0.1:8888/SSK@CxRxWs...BAAE/mysite-4. Tenga en cuenta que solo se puede curar contenido que se encuentra en Freenet y que tiene un formato v‡lido. Use el menu para obtener un formulario en blanco.
+CurateThisContent.SelectOwnIdentity.Failed = Error mientras seleccionaba la identidad propia.
+
+#Forms labels
+CurateThisContentPage.SelectWoTIdentity.Header = Seleccione la identidad WoT
+CurateThisContentPage.DataInputForm.Header = Curar este ’tem en Freenet (incluir este item en un ’ndice)
+CurateThisContentPage.AuthorLabel = La identidad que cura este ’tem.
+CurateThisContentPage.TermLabel = Curar contenido bajo esta categor’a.
+CurateThisContentPage.URILabel = FreenetURI
+CurateThisContentPage.TitleLabel = T’tulo (M‡x. 65 caracteres)
+CurateThisContentPage.TagsLabel = Agregue frases clave para encontrar el contenido m‡s facilmente (m‡ximo 3 frases).
+CurateThisContentPage.buttonAddCat = Agregar una nueva categoria
+CurateDoc.DescriptionLabel = Descripci—n del archivo (m‡ximo 180 caracteres)
+CurateDoc.MIMELabel = Utilizar el siguiente archivo como tipo MIME (dejar en blanco si desea que Freenet auto-detecte el tipo MIME)
+CurateForm.InputForm.Button.AddNewContent = Enviar los datos
+CurateForm.InputForm.Button.SelectIdentity = Usar la identidad elegida 
+
+#Plugin menu
+WebInterface.CuratorMenuItem.Home = Acerca
+WebInterface.CuratorMenuItem.Home.Tooltip = Informaci—n general del plugin
+WebInterface.CuratorMenuItem.CurateWebPage = Curar contenido web
+WebInterface.CuratorMenuItem.CurateWebPage.Tooltip = Insertar web sites a un ’ndice.
+WebInterface.CuratorMenuItem.CurateFilePage = Curar archivos
+WebInterface.CuratorMenuItem.CurateFilePage.Tooltip = Insertar documentos Freenet a un ’ndice.
+
+
+
+WebInterface.Curator = ContentCuration
+WebInterface.Curator.Tooltip = CCur Plugin, el plugin para curar contenido en Freenet y compartir archivos.
