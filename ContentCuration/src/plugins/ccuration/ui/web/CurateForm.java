@@ -135,26 +135,20 @@ abstract class CurateForm extends WebPageImpl{
 		
 		synchronized (cCur) {
 			inputForm.addChild("br"); 
-			List<String> lis,los;
+			List<String> los;
 			try {
-				lis = WoTOwnIdentities.getWoTIdentitiesCuratedCategories().get(selectedIdentity);
-				//los = WoTOwnIdentities.getCuratedCategories(selectedIdentity); //TODO test and replace lis
-				Collections.sort(lis); //No idea how it works with arabic or chinese characters
+				los = WoTOwnIdentities.getCuratedCategories().get(selectedIdentity); 
+				Collections.sort(los); //No idea how it works with arabic or chinese characters
 			} catch (PluginNotFoundException e) {
 				Logger.error(this, "WoT plugin not found", e);
 				return null;
 			}			
-			for (final String categoryID : lis) {
+			for (final String categoryID : los) {
 				HTMLNode childCategory = new HTMLNode("option", "value", categoryID, categoryID);
 				if ((newAddedCategory != null) && newAddedCategory.equals(categoryID.toString())) {
 					childCategory.addAttribute("selected", "selected");
 				}
 				selectCategory.addChild(childCategory);
-				/*
-				selectCategory.addChild("option", "value", categoryID, categoryID); 
-				if ((newAddedCategory != null) && newAddedCategory.equals(categoryID.toString())) {
-					selectCategory.addAttribute("selected", "selected");
-				}*/
 			}		
 			if (newAddedCategory == null) {
 				selectCategory.getChildren().get(0).addAttribute("selected", "selected"); //default value
@@ -167,7 +161,7 @@ abstract class CurateForm extends WebPageImpl{
 					new String[] { "text", "addedCategory", "155" });
 		final HTMLNode buttonAddCat = inputForm.addChild("input", new String[]{"type", "name", "value"},
 				new String[]{"submit", "newCategory", " + "});
-		buttonAddCat.addChild("label", "for", "buttonAddCat","Add a new category");//l10n().getString("CurateThisContentPage.TitleLabel"));
+		buttonAddCat.addChild("label", "for", "buttonAddCat",l10n().getString("CurateThisContentPage.buttonAddCat"));
 		return inputForm;
 	}
 
