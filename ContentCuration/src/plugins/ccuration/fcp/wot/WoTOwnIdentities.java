@@ -50,6 +50,7 @@ public class WoTOwnIdentities {
 	public static final String IDENTITY_KEY_PREFIX = "Identity";
 	public static final String IDENTITY_PROPERTY_NAME_SUFFIX = "Name";
 	public static final String IDENTITY_PROPERTY_VALUE_SUFFIX = "Value";
+	public static final String IDENTITY_CATEGORY_NAME_PREFIX = "Index.";
 
 	/**
 	 * Check if the identity has "Curator" in Contexts. 
@@ -69,7 +70,7 @@ public class WoTOwnIdentities {
 	 * @throws PluginNotFoundException 
 	 */
 	public static Boolean indexIsRegistered(String author, String indexName) throws PluginNotFoundException {
-		List<String> contexts = getWoTIdentitiesCuratedCategories().get(author);
+		List<String> contexts = getCuratedCategories().get(author);
 		return contexts.contains(indexName);
 	}
 
@@ -219,119 +220,57 @@ public class WoTOwnIdentities {
 	}
 
 	/**
-	 * Get all categories curated by the identity. 
+	 * Get all categories curated of the identity passed as argument. 
 	 * @return Map of the requested data.
 	 * @throws PluginNotFoundException
 	 */
-	public static Vector<String> getCuratedCategories(String identityID) throws PluginNotFoundException {
-		final Vector<String> categories = new Vector<String>();
-		final SimpleFieldSet sfs = new SimpleFieldSet(true);
-		sfs.putOverwrite("Message", "GetIdentity");
-		sfs.putOverwrite("Identity", identityID);
-
-		System.out.println("init getCuratedCategories");
-		System.out.println("identityID "+identityID);
-		SyncPluginTalker spt = new SyncPluginTalker(new ReceptorCore() {
-
-			public void onReply(String pluginname, String indentifier, SimpleFieldSet params, Bucket data) {
-				try {
-					if (params.getString("Message").equals("Identity")) {
-						System.out.println("inside reply");
-						Iterator<String> it = params.keyIterator();
-						while (it.hasNext()) {
-							String key = it.next();
-							if (key.startsWith(IDENTITY_PROPERTY_PREFIX) && key.endsWith(IDENTITY_PROPERTY_NAME_SUFFIX)) {
-								categories.add(params.get(key));
-								System.out.println("key, value "+ key+","+params.get(key).split(".")[1]);
-							}
-						}
-					} else {
-						Logger.error(this, "Unexpected message : " + params.getString("Message"));
-					}
-				} catch (FSParseException ex) {
-					Logger.error(this, "WoTOwnIdentities : Parse error !");
-				}
-			}
-		}, sfs, null);
-
-		spt.run();
-
-		return categories;
-	}
-
-	
-	
-	/**
-	 * Get all categories curated by WoTOwnidentities. 
-	 * @return Map of the requested data.
-	 * @throws PluginNotFoundException
-	 */
-	public static Map<String, List<String>> getWoTIdentitiesCuratedCategories() throws PluginNotFoundException {
-		final Map<String, List<String>> identities = new HashMap<String, List<String>>();
+	public static Map<String, Vector<String>> getCuratedCategories() throws PluginNotFoundException {
+		final Map<String, Vector<String>> identities = new HashMap<String, Vector<String>>();
 		final SimpleFieldSet sfs = new SimpleFieldSet(true);
 		sfs.putOverwrite("Message", "GetOwnIdentities");
-
-		System.out.println("init getWoTIdentitiesCuratedCategories");
+		
 		SyncPluginTalker spt = new SyncPluginTalker(new ReceptorCore() {
 
 			public void onReply(String pluginname, String indentifier, SimpleFieldSet params, Bucket data) {
 				try {
 					if (params.getString("Message").equals("OwnIdentities")) {
-						Vector<String> identifiers = new Vector<String>();
-						Vector<Integer> counter = new Vector<Integer>(); 
-						Vector<String> contexts = new Vector<String>();	
-						int ix, prev;
-						
-						/*
-						Iterator<String> it = params.keyIterator();
+						Map<String,String> identifiers = new HashMap<String,String>();
+						String currentId = null;
+						Iterator<String> it = params.toplevelKeyIterator();
 						while (it.hasNext()) {
 							String key = it.next();
-							if (key.startsWith("IDENTITY_KEY_PREFIX ")) {
-								System.out.println("key, value "+ key+","+params.get(key));
-							}
-							if (key.startsWith(IDENTITY_PROPERTY_PREFIX)) {
-								System.out.println("key, value "+ key+","+params.get(key));
-							}
+							if (key.startsWith(IDENTITY_KEY_PREFIX)) {
+								currentId = params.get(key);
+								String id = key.split(IDENTITY_KEY_PREFIX)[1];
+								identifiers.put(id,currentId);
+							} 
 						}
-						*/
-	
-						
-						for (final String s : params.toOrderedString().split("\n")) {
-							if (s.startsWith("Identity")) {
-								identifiers.add(s.split("=")[1]);
-								counter.add(0);
-							} else if (s.startsWith(IDENTITY_PROPERTY_PREFIX)) { //Properties0.Property1.Name=Index.culture
-								String[] v = s.split("\\.Name=Index\\.");
-								if (v.length==2) { //We only wants strings that contains names and not values
-									String[] w = v[0].split(IDENTITY_PROPERTY_PREFIX_INTERNAL);
-									ix = Integer.parseInt(w[0].substring(IDENTITY_PROPERTY_PREFIX.length()));
-									prev = counter.get(ix);
-									counter.set(ix, ++prev); 
-									contexts.add(v[1]);	
+						for(String idNum : identifiers.keySet()) {
+							int count = 0;
+							Vector<String> categories = new Vector<String>();
+							while(true) {
+								String name = params.get("Properties"+idNum+".Property"+count+".Name");
+								if(name == null) break;
+								count++;
+								if (name.startsWith(IDENTITY_CATEGORY_NAME_PREFIX)) {
+									categories.add(name.split(IDENTITY_CATEGORY_NAME_PREFIX)[1]);
 								}
 							}
-						}
-						
-						assert (identifiers.size() == counter.size());
-						int qty, init = 0;
-						for (int i = 0; i < identifiers.size(); ++i) {
-							qty = counter.elementAt(i);
-							if (qty>0) {
-								identities.put(identifiers.get(i), contexts.subList(init, init + qty)); 
-							} else identities.put(identifiers.get(i), Arrays.asList(EMPTY_PUBLISHED_CATEGORIES_MSG));
-							init = init + qty;
+							if (!categories.isEmpty()) {
+								identities.put(identifiers.get(idNum), categories);
+							}
 						}
 					} else {
 						Logger.error(this, "Unexpected message : " + params.getString("Message"));
 					}
 				} catch (FSParseException ex) {
-					Logger.error(this, "WoTOwnIdentities : Parse error !");
+					Logger.error(this, "WoTIdentity : Parse error !");
 				}
 			}
 		}, sfs, null);
 
 		spt.run();
-
+		
 		return identities;
 	}
 

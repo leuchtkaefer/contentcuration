@@ -61,7 +61,7 @@ public class WoTIdentities {
 						Logger.error(this, "Unexpected message : " + params.getString("Message"));
 					}
 				} catch (FSParseException ex) {
-					Logger.error(this, "WoTOwnIdentities : Parse error !");
+					Logger.error(this, "WoTIdentities : Parse error !");
 				}
 			}
 		}, sfs, null);
